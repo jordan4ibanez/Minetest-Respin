@@ -89,18 +89,9 @@ treefeller_loop = function(pos,digger)
 			end
 		end
 	end
-	
 	vm:update_liquids()
 	vm:set_data(data)
 	vm:calc_lighting()
 	vm:write_to_map()
 	vm:update_map()
 end
-
-minetest.register_on_placenode(function(pos, newnode, placer, oldnode, itemstack, pointed_thing)
-    if oldnode ~= nil then
-        print("Node " .. oldnode.name .. " at " ..  minetest.pos_to_string(pos) .. " replaced with " .. newnode.name .. "  by " .. placer:get_player_name())
-    else
-        print("Node " .. newnode.name .. " at " ..  minetest.pos_to_string(pos) .. " placed by " .. placer:get_player_name())
-    end
-end)
