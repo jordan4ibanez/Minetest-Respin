@@ -278,17 +278,19 @@ core.register_entity(":__builtin:item", {
 		if item_drop_settings.random_item_velocity == true then
 			minetest.after(0, function()
 				local vel = self.object:getvelocity()
-				if vel.x == 0 and vel.z == 0 then
-					local x = math.random(1, 5)
-					if math.random(1,2) == 1 then
-						x = -x
+				if vel ~= nil then
+					if vel.x == 0 and vel.z == 0 then
+						local x = math.random(1, 5)
+						if math.random(1,2) == 1 then
+							x = -x
+						end
+						local z = math.random(1, 5)
+						if math.random(1,2) == 1 then
+							z = -z
+						end
+						local y = math.random(2,4)
+						self.object:setvelocity({x=1/x, y=y, z=1/z})		
 					end
-					local z = math.random(1, 5)
-					if math.random(1,2) == 1 then
-						z = -z
-					end
-					local y = math.random(2,4)
-					self.object:setvelocity({x=1/x, y=y, z=1/z})		
 				end
 			end)
 		end
