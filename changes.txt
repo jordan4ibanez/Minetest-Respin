@@ -9,3 +9,9 @@ respawn at your bed
 bed night skip enabled
 
 added in item drop with softer sound
+
+shortened days and nights
+
+Increased fov slightly
+
+made it so you can cut down trees with a single cut
