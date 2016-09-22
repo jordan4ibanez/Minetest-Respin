@@ -2,6 +2,30 @@
 --
 -- 3d torch part
 --
+minetest.register_lbm({
+	name = "torches:remove_fire",
+	nodenames = {"default:torch", "default:torch_wall"},
+	run_at_every_load = true,
+	action = function(pos, node)
+		minetest.add_particlespawner({
+			amount = 5,
+			time = 0,
+			minpos = {x=pos.x-0.1,y=pos.y+0.1,z=pos.z-0.1},
+			maxpos = {x=pos.x+0.1,y=pos.y+0.1,z=pos.z+0.1},
+			minvel = {x=0, y=0.3, z=0},
+			maxvel = {x=0, y=0.5, z=0},
+			minacc = {x=0, y=0, z=0},
+			maxacc = {x=0, y=0, z=0},
+			minexptime = 1,
+			maxexptime = 1,
+			minsize = 2,
+			maxsize = 2,
+			collisiondetection = false,
+			vertical = false,
+			texture = "torch_smoke.png",
+		})
+	end,
+})
 
 minetest.register_node(":default:torch", {
 	description = "Torch",

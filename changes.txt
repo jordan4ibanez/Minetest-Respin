@@ -15,3 +15,7 @@ shortened days and nights
 Increased fov slightly
 
 made it so you can cut down trees with a single cut
+
+added in sofar's 3d torches and gave them smoke particles
+
+
