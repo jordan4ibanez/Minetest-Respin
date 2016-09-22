@@ -1,0 +1,9 @@
+creative mode is set to false
+
+items are dropped on death
+
+no initial things
+
+respawn at your bed
+
+bed night skip enabled
