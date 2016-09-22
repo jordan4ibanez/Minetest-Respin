@@ -7,3 +7,5 @@ no initial things
 respawn at your bed
 
 bed night skip enabled
+
+added in item drop with softer sound
