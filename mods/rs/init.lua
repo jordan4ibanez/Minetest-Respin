@@ -1,7 +1,7 @@
 minetest.register_entity("rs:r", { --basic minecart
 
 	physical     = true,
-	collisionbox = {-0.45, -0.45, -0.45, 0.45, 0.45, 0.45},
+	collisionbox = {-0.45, -1.75, -0.45, 0.45, 0.45, 0.45},
 	visual       = "mesh",
 	mesh         = "minecart.x",
 	textures     = {"minecart.png"},
@@ -20,6 +20,8 @@ minetest.register_entity("rs:r", { --basic minecart
 	
 	speed = 0,
 	
+	attach = false,
+	
 	--punch function
 	on_punch = function(self)
 	end,
@@ -28,8 +30,16 @@ minetest.register_entity("rs:r", { --basic minecart
 	on_rightclick = function(self, clicker)
 		self.dir_x = 1
 		--self.obj
-		self.speedup = true
-		clicker:set_attach(self.object, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+		if self.attach == false then
+			self.speedup = true
+			clicker:set_attach(self.object, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+			self.attach = clicker:get_player_name()
+		elseif self.attach ~= false then
+			self.speedup = false
+			local player = minetest.get_player_by_name(self.attach)
+			player:set_detach()
+			self.attach = false
+		end
 	end,
 
 	--when the entity is created in world
@@ -53,6 +63,13 @@ minetest.register_entity("rs:r", { --basic minecart
 		self.timer = self.timer + dtime
 		if self.speedup == true then
 			self.speed = self.speed + dtime
+		else
+			if self.speed > 0 then
+				self.speed = self.speed - dtime
+				if self.speed < 0 then
+					self.speed = 0
+				end
+			end
 		end
 		
 		local pos = self.object:getpos()
@@ -93,6 +110,7 @@ minetest.register_entity("rs:r", { --basic minecart
 
 minetest.override_item("default:stick", {
 	on_place = function(itemstack, placer, pointed_thing)
+		pointed_thing.above.y = pointed_thing.above.y + 2
 		minetest.add_entity(pointed_thing.above, "rs:r")
 	end,
 })
