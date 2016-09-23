@@ -32,7 +32,7 @@ function register_stupid_mob(name, def)
 	timer = 0,
 	makes_footstep_sound = true,
 	--stepheight = 1, --2 for not jumping
-	collide_with_objects = false,
+	collide_with_objects = true,
 	timer_max = 0,
 	vel_goal_x = 0,
 	vel_goal_z = 0,
@@ -84,7 +84,6 @@ function register_stupid_mob(name, def)
 	get_staticdata = function(self)
 		return minetest.serialize({
 			timer = self.timer,
-
 		})
 	end,
 
@@ -104,22 +103,63 @@ function register_stupid_mob(name, def)
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
+		--this is for mob age
+		---self.object:set_properties({visual_size = {x=self.age, y=self.age}})
+		
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
 		self.object:setacceleration({x=self.vel_goal_x - vel.x,y=-10,z=self.vel_goal_z - vel.z})
 		
-		if minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y + 0.9, z=pos.z+self.vel_goal_z}).name ~= "air" then
-			self.object:setvelocity({x=vel.x,y=5,z=vel.z})
+		--if there is a walkable node try to jump unless it's a fence
+		--if in water, swim up
+		local node = minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y + 0.5, z=pos.z+self.vel_goal_z}).name
+		local walkable = minetest.registered_items[node].walkable
+		local fence = minetest.get_item_group(node, "fence")
+		local below = minetest.get_node({x=pos.x, y=pos.y - 0.1, z=pos.z}).name
+		local below2 = minetest.registered_items[below].walkable
+		local node_center = minetest.get_node({x=pos.x, y=pos.y + 0.5, z=pos.z}).name
+		if walkable == true then
+			if fence == 0 then
+				if below2 == true then
+					self.object:setvelocity({x=vel.x,y=5,z=vel.z})
+				end
+			end
+		end
+		--swim wherever it's going
+		if minetest.get_item_group(node_center, "water") > 0 then
+			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=1 - vel.y,z=self.vel_goal_z - vel.z})
 		end
 		
-		---self.object:set_properties({visual_size = {x=self.timer, y=self.timer}})
+		--change the animation speed based on how fast the mob moves
+		if math.abs(vel.x) > math.abs(vel.z) then
+			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.x)*15, 0)
+		else
+			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.z)*15, 0)
+		end
+		
+		--if the velocity goal is almost 0 then do standing animation when stil
+		if self.vel_goal_x == 0 and self.vel_goal_z == 0 then
+			if math.abs(vel.x) < 0.05 and math.abs(vel.z) < 0.05 then
+				self.object:set_animation({x=def.stand_start,y=def.stand_end},def.normal_speed, 0)
+			end
+		end
+		
+		--this section changes if the mob moves or stands still based on an internal timer
 		if self.timer > self.timer_max then
 			--change velocity goal
-			print("change velocity goal")
-			self.vel_goal_x = math.random(-def.max_speed,def.max_speed)*math.random()
-			self.vel_goal_z = math.random(-def.max_speed,def.max_speed)*math.random()
+			--print("change velocity goal")
 			self.timer = 0
-			self.timer_max = math.random(1,10)
+			self.timer_max = math.random(2,10)
+			if math.random() > 0.5 then
+				--rest
+				self.vel_goal_x = 0
+				self.vel_goal_z = 0
+			else
+				--move
+				self.vel_goal_x = math.random(-def.max_speed,def.max_speed)*math.random()
+				self.vel_goal_z = math.random(-def.max_speed,def.max_speed)*math.random()
+			end
+			
 		end
 		
 	end,
