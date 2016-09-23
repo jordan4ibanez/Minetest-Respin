@@ -20,7 +20,7 @@ function register_mob_water(name, def)
 	fall = false,
 	
 	timer = 0,
-	makes_footstep_sound = true,
+	makes_footstep_sound = false,
 	--stepheight = 1, --2 for not jumping
 	collide_with_objects = false,
 	timer_max = 0,
@@ -217,6 +217,11 @@ function register_mob_water(name, def)
 			--print("change velocity goal")
 			self.timer = 0
 			self.timer_max = math.random(2,10)
+			minetest.sound_play("fish_bubbles", {
+				pos = pos,
+				max_hear_distance = 20,
+				gain = 10.0,
+			})
 			if math.random() > 0.5 then
 				--rest
 				self.vel_goal_x = 0
