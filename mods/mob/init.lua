@@ -14,7 +14,7 @@ mob_chunksize = minetest.get_mapgen_params().chunksize
 
 function register_stupid_mob(name, def)
 	minetest.register_entity("mob:"..name, {
-	
+	hp_max       = def.hp,
 	physical     = true,
 	collisionbox = def.collisionbox,
 	visual       = def.visual, --do this for "node monsters"
@@ -45,7 +45,36 @@ function register_stupid_mob(name, def)
 			local pos = self.object:getpos()
 			pos.y = pos.y + 0.5
 			minetest.add_item(pos, def.drop)
+			minetest.add_particlespawner({
+				 amount = 40,
+				 time = 0.1,
+				 minpos = {x=pos.x-0.5, y=pos.y, z=pos.z-0.5},
+				 maxpos = {x=pos.x+0.5, y=pos.y+1, z=pos.z+0.5},
+				 minvel = {x=0, y=0.5, z=0},
+				 maxvel = {x=0, y=1, z=0},
+				 minacc = {x=0, y=0, z=0},
+				 maxacc = {x=0, y=0, z=0},
+				 minexptime = 1,
+				 maxexptime = 1,
+				 minsize = 1,
+				 maxsize = 2,
+				 collisiondetection = false,
+				 vertical = false,
+				 texture = "spawn_smoke.png",
+			})
+			minetest.sound_play("poof", {
+				pos = pos,
+				max_hear_distance = 100,
+				gain = 10.0,
+			})
+		else
+			minetest.sound_play(def.hurt_sound, {
+				pos = pos,
+				max_hear_distance = 10,
+				gain = 10.0,
+			})
 		end
+
 	end,
 
 	--right click function
@@ -63,8 +92,8 @@ function register_stupid_mob(name, def)
 			 time = 0.1,
 			 minpos = {x=pos.x-0.5, y=pos.y, z=pos.z-0.5},
 			 maxpos = {x=pos.x+0.5, y=pos.y+1, z=pos.z+0.5},
-			 minvel = {x=0, y=1, z=0},
-			 maxvel = {x=0, y=2, z=0},
+			 minvel = {x=0, y=0.5, z=0},
+			 maxvel = {x=0, y=1, z=0},
 			 minacc = {x=0, y=0, z=0},
 			 maxacc = {x=0, y=0, z=0},
 			 minexptime = 1,
@@ -222,6 +251,7 @@ end
 
 register_stupid_mob("sheep", {
 --self params
+hp           = 10,
 collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 visual       = "mesh",
 mesh         = "mobs_sheep.x",
@@ -241,6 +271,7 @@ fill_ratio   = 0.01, --amount of mobs to spawn
 max_speed    = 2,
 
 drop         = "wool:white",
+hurt_sound   = "sheep",
 })
 
 --[[
