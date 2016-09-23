@@ -146,11 +146,14 @@ walk_end     = 100,
 
 --world/behavior params
 hostile      = true,
-chase_rad    = 20,
-attack_rad   = 2,
+chase_rad    = 15,
+attack_rad   = 2.5,
+health       = 20,
 spawn_on     = "default:dirt_with_grass",
 scarcity     = 10000, --the higher the less mobs to spawn 
 max_speed    = 3,
+attack_cooldown = 0.5,
+attack_damage = 2,
 
 drop         = "default:glass",
 

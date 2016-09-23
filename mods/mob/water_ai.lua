@@ -2,7 +2,7 @@
 
 function register_mob_water(name, def)
 	minetest.register_entity("mob:"..name, {
-	hp_max       = def.hp,
+	hp_max       = def.health,
 	physical     = true,
 	collisionbox = def.collisionbox,
 	visual       = def.visual, --do this for "node monsters"
@@ -13,6 +13,7 @@ function register_mob_water(name, def)
 	
 	automatic_face_movement_dir = def.dir,
 	yaw = 0,
+	attack_timer = 0,
 
 	
 	jump = false,
@@ -120,7 +121,7 @@ function register_mob_water(name, def)
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
-
+		self.attack_timer = self.attack_timer + dtime
 		
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
@@ -182,7 +183,10 @@ function register_mob_water(name, def)
 						self.vel_goal_z = (vec.z*-def.max_speed/2)
 						for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
 							if object:is_player() then
-								object:set_hp(object:get_hp()-1)
+								if self.attack_timer > def.attack_cooldown then
+									object:set_hp(object:get_hp()-def.attack_damage)
+									self.attack_timer = 0
+								end
 							end
 						end
 						break
