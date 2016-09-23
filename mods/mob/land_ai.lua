@@ -8,6 +8,7 @@ function register_mob_land(name, def)
 	mesh         = def.mesh,
 	textures     = def.textures,
 	hostile      = def.hostile,
+	visual_size = {x=def.size, y=def.size},
 	
 	automatic_face_movement_dir = def.dir,
 	yaw = 0,

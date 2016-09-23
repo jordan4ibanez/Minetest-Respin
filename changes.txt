@@ -18,4 +18,6 @@ made it so you can cut down trees with a single cut
 
 added in sofar's 3d torches and gave them smoke particles
 
+added in sheep, cows, and fish, gave them simple ai and api
+
 

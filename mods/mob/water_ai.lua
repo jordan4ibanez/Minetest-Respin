@@ -9,6 +9,7 @@ function register_mob_water(name, def)
 	mesh         = def.mesh,
 	textures     = def.textures,
 	hostile      = def.hostile,
+	visual_size = {x=def.size, y=def.size},
 	
 	automatic_face_movement_dir = def.dir,
 	yaw = 0,
@@ -125,32 +126,70 @@ function register_mob_water(name, def)
 		local vel = self.object:getvelocity()
 		self.object:setacceleration({x=self.vel_goal_x - vel.x,y=self.vel_goal_y - vel.y,z=self.vel_goal_z - vel.z})
 		
-		--if there is a walkable node try to jump unless it's a fence
-		--if in water, swim up
-		local node = minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y + 0.5, z=pos.z+self.vel_goal_z}).name
+		
+		
+		
+		
+		--if fish is out of water then flop around
+
+		local node = minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y +def.collisionbox[2] + 0.5, z=pos.z+self.vel_goal_z}).name
 		local walkable = minetest.registered_items[node].walkable
 		local fence = minetest.get_item_group(node, "fence")
-		local below = minetest.get_node({x=pos.x, y=pos.y - 0.1, z=pos.z}).name
+		local below = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] -  0.1, z=pos.z}).name
 		local below2 = minetest.registered_items[below].walkable
-		local node_center = minetest.get_node({x=pos.x, y=pos.y + 0.5, z=pos.z}).name
+		local node_center = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] + 0.5, z=pos.z}).name
+			
 		
-		--if out of water then apply gravity and render it unable to move, flopping around
-		if minetest.get_item_group(node_center, "water") == 0 then
-			if self.vel_goal_x == 0 and self.vel_goal_y == 0 and self.vel_goal_z == 0 then
-				if below2 == true then
-					self.object:setvelocity({x=vel.x,y=5,z=vel.z})
-					--make fish run out of breath
-					minetest.sound_play("fish_splat", {
-						pos = pos,
-						max_hear_distance = 10,
-						gain = 0.5,
-					})
-				end
-			end
+		--if resting then stop
+		if self.vel_goal_x == 0 and self.vel_goal_y == 0 and self.vel_goal_z == 0 then
 			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=-10,z=self.vel_goal_z - vel.z})
-			self.vel_goal_x = 0
-			self.vel_goal_y = 0
-			self.vel_goal_z = 0
+		end
+		--if out of water then apply gravity and render it unable to move, flopping around
+		--if in water and player is near, attack
+		if minetest.get_item_group(node_center, "water") == 0 then
+			if below2 == true then
+				self.object:setvelocity({x=vel.x,y=5,z=vel.z})
+				--make fish run out of breath
+				minetest.sound_play("fish_splat", {
+					pos = pos,
+					max_hear_distance = 10,
+					gain = 0.5,
+				})
+				self.vel_goal_x = 0
+				self.vel_goal_y = 0
+				self.vel_goal_z = 0
+			end
+			
+			--self.vel_goal_x = 0
+			--self.vel_goal_y = 0
+			--self.vel_goal_z = 0
+			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=-10,z=self.vel_goal_z - vel.z})
+		else
+			if self.hostile == true then
+				for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.chase_rad)) do
+					if object:is_player() then
+				--modified simplemobs api
+									
+						local pos1 = pos
+						--pos1.y = pos1.y+item_drop_settings.player_collect_height
+						local pos2 = object:getpos()
+						local vec = {x=pos1.x-pos2.x, y=(pos1.y+item_drop_settings.player_collect_height)-pos2.y, z=pos1.z-pos2.z}
+						--vec.x = vec.x
+						--vec.y = vec.y
+						--vec.z = vec.z
+						self.vel_goal_x = (vec.x*-def.max_speed/2) -- this is a lazy workaround
+						self.vel_goal_y = (vec.y*-def.max_speed/2)
+						self.vel_goal_z = (vec.z*-def.max_speed/2)
+						for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
+							if object:is_player() then
+								object:set_hp(object:get_hp()-1)
+							end
+						end
+						break
+					end
+				end
+				
+			end		
 		end
 		
 
@@ -179,15 +218,14 @@ function register_mob_water(name, def)
 				self.vel_goal_x = 0
 				self.vel_goal_z = 0
 				self.vel_goal_y = 0
+				self.timer = self.timer/2
 			else
 				--move
 				self.vel_goal_x = math.random(-def.max_speed,def.max_speed)*math.random()
 				self.vel_goal_z = math.random(-def.max_speed,def.max_speed)*math.random()
 				self.vel_goal_y = math.random(-def.max_speed,def.max_speed)*math.random()
 			end
-			
 		end
-		
 	end,
 	})
 

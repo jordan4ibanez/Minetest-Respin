@@ -48,11 +48,12 @@ minetest.register_craft({
 register_mob_land("sheep", {
 --self params
 hp           = 10,
-collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
+collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 visual       = "mesh",
 mesh         = "mobs_sheep.x",
 textures     = {"mobs_sheep.png"},
 dir          = -90,
+size         = 1,
 
 --animation params
 normal_speed = 15,
@@ -76,11 +77,12 @@ hurt_sound   = "sheep",
 
 register_mob_land("cow", {
 --self params
-collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
+collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 visual       = "mesh",
 mesh         = "mobs_cow.x",
 textures     = {"mobs_cow.png"},
 dir          = -90,
+size         = 1,
 
 --animation params
 normal_speed = 15,
@@ -101,11 +103,12 @@ drop         = "default:glass",
 
 register_mob_water("fish", {
 --self params
-collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
+collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
 visual       = "mesh",
 mesh         = "fish.x",
 textures     = {"fish_tail.png","fish_body.png"},
 dir          = 90,
+size         = 1,
 
 --animation params
 normal_speed = 80,
@@ -118,6 +121,35 @@ walk_end     = 100,
 hostile      = false,
 spawn_on     = "default:dirt_with_grass",
 scarcity     = 4000, --the higher the less mobs to spawn 
+max_speed    = 3,
+
+drop         = "default:glass",
+
+})
+
+
+register_mob_water("big_fish", {
+--self params
+collisionbox = {-1, -1, -1, 1, 1, 1},
+visual       = "mesh",
+mesh         = "fish.x",
+textures     = {"fish_tail.png","big_fish_body.png"},
+dir          = 90,
+size         = 4,
+
+--animation params
+normal_speed = 80,
+stand_start  = 20,
+stand_end    = 100,
+walk_start   = 20,
+walk_end     = 100,
+
+--world/behavior params
+hostile      = true,
+chase_rad    = 20,
+attack_rad   = 2,
+spawn_on     = "default:dirt_with_grass",
+scarcity     = 10000, --the higher the less mobs to spawn 
 max_speed    = 3,
 
 drop         = "default:glass",
