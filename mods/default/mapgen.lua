@@ -1007,7 +1007,7 @@ function default.register_mgv6_decorations()
 	})
 
 	-- Long grasses
-
+	
 	for length = 1, 5 do
 		minetest.register_decoration({
 			deco_type = "simple",
@@ -1026,7 +1026,7 @@ function default.register_mgv6_decorations()
 			decoration = "default:grass_"..length,
 		})
 	end
-
+	
 	-- Dry shrubs
 
 	minetest.register_decoration({

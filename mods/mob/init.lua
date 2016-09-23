@@ -4,13 +4,37 @@
 --have mob have stat bars above them
 --save mob stats on deserialize
 
+--have mobs regenerate use after eating grass or whatever they eat or drink
+
 --built on simple mobs, with assets from simplemobs[pilzadam], mobs redo[tenplus1],mob spawn eggs[thefamilygrog66]
 
 
---current goal: have mob move around on it's own and not be so stupid
+--DONE have mob move around on it's own and not be so stupid
 
 mob_chunksize = minetest.get_mapgen_params().chunksize
 
+minetest.register_craftitem("mob:shears", {
+	description = "Shears",
+	inventory_image = "shears.png",
+})
+
+minetest.register_craftitem("mob:meat_raw", {
+	description = "Raw Meat",
+	inventory_image = "mobs_meat_raw.png",
+})
+
+minetest.register_craftitem("mob:meat", {
+	description = "Meat",
+	inventory_image = "mobs_meat.png",
+	on_use = minetest.item_eat(5),
+})
+
+minetest.register_craft({
+	type = "cooking",
+	output = "mob:meat",
+	recipe = "mob:meat_raw",
+	cooktime = 5,
+})
 
 function register_stupid_mob(name, def)
 	minetest.register_entity("mob:"..name, {
@@ -36,6 +60,7 @@ function register_stupid_mob(name, def)
 	timer_max = 0,
 	vel_goal_x = 0,
 	vel_goal_z = 0,
+	used = false,
 	
 	--punch function
 	on_punch = function(self)
@@ -80,6 +105,13 @@ function register_stupid_mob(name, def)
 	--right click function
 	on_rightclick = function(self, clicker)
 		--do stuff, like milk cow, or shear sheep with shears
+		local pos = self.object:getpos()
+		if self.used == false then
+			if clicker:get_wielded_item():to_string() == def.tool then
+				minetest.add_item(pos, def.alt_drop)
+				self.used = true
+			end
+		end
 	end,
 
 	--when the entity is created in world
@@ -113,6 +145,8 @@ function register_stupid_mob(name, def)
 	get_staticdata = function(self)
 		return minetest.serialize({
 			timer = self.timer,
+			used  = self.used,
+			age   = self.age,
 		})
 	end,
 
@@ -132,8 +166,7 @@ function register_stupid_mob(name, def)
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
-		--this is for mob age
-		---self.object:set_properties({visual_size = {x=self.age, y=self.age}})
+
 		
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
@@ -211,8 +244,8 @@ function register_stupid_mob(name, def)
 
 
 
-
 	--spawners
+	
 	minetest.register_decoration({
 		deco_type = "simple",
 		place_on = def.spawn_on,
@@ -239,6 +272,7 @@ function register_stupid_mob(name, def)
 			minetest.add_entity(pos, "mob:"..name)
 		end,
 	})
+	
 	--spawnegg
 	minetest.register_craftitem("mob:"..name.."_spawn_egg",{
 		description = name.." Spawn Egg",
@@ -270,11 +304,13 @@ spawn_on     = "default:dirt_with_grass",
 fill_ratio   = 0.01, --amount of mobs to spawn
 max_speed    = 2,
 
-drop         = "wool:white",
+tool         = "mob:shears",
+alt_drop     = "wool:white",
+drop         = "mob:raw_meat",
 hurt_sound   = "sheep",
 })
 
---[[
+
 register_stupid_mob("cow", {
 --self params
 collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
@@ -298,4 +334,3 @@ max_speed    = 3,
 drop         = "default:glass",
 
 })
-]]--
