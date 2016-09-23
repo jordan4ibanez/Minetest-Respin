@@ -21,3 +21,6 @@ added in sofar's 3d torches and gave them smoke particles
 added in sheep, cows, and fish, gave them simple ai and api
 
 
+TODO 
+
+make item entity use the same inertia method for collection/friction as mobs

@@ -174,7 +174,7 @@ function register_mob_water(name, def)
 						local pos1 = pos
 						--pos1.y = pos1.y+item_drop_settings.player_collect_height
 						local pos2 = object:getpos()
-						local vec = {x=pos1.x-pos2.x, y=(pos1.y+item_drop_settings.player_collect_height)-pos2.y, z=pos1.z-pos2.z}
+						local vec = {x=pos1.x-pos2.x, y=pos1.y-pos2.y, z=pos1.z-pos2.z}
 						--vec.x = vec.x
 						--vec.y = vec.y
 						--vec.z = vec.z
