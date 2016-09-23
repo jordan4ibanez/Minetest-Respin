@@ -143,7 +143,7 @@ function register_mob_water(name, def)
 		
 		--if resting then stop
 		if self.vel_goal_x == 0 and self.vel_goal_y == 0 and self.vel_goal_z == 0 then
-			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=-10,z=self.vel_goal_z - vel.z})
+			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=self.vel_goal_y - vel.y,z=self.vel_goal_z - vel.z})
 		end
 		--if out of water then apply gravity and render it unable to move, flopping around
 		--if in water and player is near, attack
@@ -178,9 +178,9 @@ function register_mob_water(name, def)
 						--vec.x = vec.x
 						--vec.y = vec.y
 						--vec.z = vec.z
-						self.vel_goal_x = (vec.x*-def.max_speed/2) -- this is a lazy workaround
-						self.vel_goal_y = (vec.y*-def.max_speed/2)
-						self.vel_goal_z = (vec.z*-def.max_speed/2)
+						self.vel_goal_x = (vec.x*-1) -- this is a lazy workaround
+						self.vel_goal_y = (vec.y*-1)
+						self.vel_goal_z = (vec.z*-1)
 						for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
 							if object:is_player() then
 								if self.attack_timer > def.attack_cooldown then
