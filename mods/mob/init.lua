@@ -46,7 +46,7 @@ function register_stupid_mob(name, def)
 	textures     = def.textures,
 	hostile      = def.hostile,
 	
-	automatic_face_movement_dir = -90.0,
+	automatic_face_movement_dir = def.dir,
 	yaw = 0,
 
 	
@@ -152,17 +152,6 @@ function register_stupid_mob(name, def)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
@@ -194,9 +183,9 @@ function register_stupid_mob(name, def)
 		
 		--change the animation speed based on how fast the mob moves
 		if math.abs(vel.x) > math.abs(vel.z) then
-			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.x)*15, 0)
+			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.x)*def.normal_speed, 0)
 		else
-			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.z)*15, 0)
+			self.object:set_animation({x=def.walk_start,y=def.walk_end},math.abs(vel.z)*def.normal_speed, 0)
 		end
 		
 		--if the velocity goal is almost 0 then do standing animation when stil
@@ -226,23 +215,6 @@ function register_stupid_mob(name, def)
 		
 	end,
 	})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	--spawners
 	
@@ -290,6 +262,7 @@ collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 visual       = "mesh",
 mesh         = "mobs_sheep.x",
 textures     = {"mobs_sheep.png"},
+dir          = -90,
 
 --animation params
 normal_speed = 15,
@@ -317,6 +290,7 @@ collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 visual       = "mesh",
 mesh         = "mobs_cow.x",
 textures     = {"mobs_cow.png"},
+dir          = -90,
 
 --animation params
 normal_speed = 15,
@@ -324,6 +298,31 @@ stand_start  = 0,
 stand_end    = 30,
 walk_start   = 35,
 walk_end     = 65,
+
+--world/behavior params
+hostile      = false,
+spawn_on     = "default:dirt_with_grass",
+fill_ratio   = 0.01, --amount of mobs to spawn 
+max_speed    = 3,
+
+drop         = "default:glass",
+
+})
+
+register_stupid_mob("fish", {
+--self params
+collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
+visual       = "mesh",
+mesh         = "fish.x",
+textures     = {"fish_tail.png","fish_body.png"},
+dir          = 90,
+
+--animation params
+normal_speed = 80,
+stand_start  = 0,
+stand_end    = 80,
+walk_start   = 0,
+walk_end     = 80,
 
 --world/behavior params
 hostile      = false,
