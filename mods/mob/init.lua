@@ -117,7 +117,7 @@ walk_end     = 100,
 --world/behavior params
 hostile      = false,
 spawn_on     = "default:dirt_with_grass",
-scarcity     = 10000, --the higher the less mobs to spawn 
+scarcity     = 4000, --the higher the less mobs to spawn 
 max_speed    = 3,
 
 drop         = "default:glass",
