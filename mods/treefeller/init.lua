@@ -1,7 +1,3 @@
-local stringer = "axe_mese"
-
-
-
 minetest.register_on_dignode(function(pos, oldnode, digger)
 	local item = digger:get_wielded_item():to_string()
 	if string.match(item, "axe_") then
