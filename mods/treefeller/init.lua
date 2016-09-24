@@ -1,4 +1,7 @@
 minetest.register_on_dignode(function(pos, oldnode, digger)
+	if digger == nil then
+		return
+	end
 	local item = digger:get_wielded_item():to_string()
 	if string.match(item, "axe_") then
 		if minetest.get_item_group(oldnode.name, "tree") ~= 0 then

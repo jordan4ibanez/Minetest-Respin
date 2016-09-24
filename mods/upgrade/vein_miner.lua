@@ -1,19 +1,5 @@
-minetest.register_on_dignode(function(pos, oldnode, digger)
-	if digger == nil then
-	 return
-	end
-	local item = digger:get_wielded_item():to_string()
-	if string.match(item, "pick_") then
-		if string.match(oldnode.name, "stone_with_") then
-			veinminer_loop(pos,digger)
-			
-		end
-	end
-end)
-
-
 --have this recursively check for ore around it (1 node radius)
-veinminer_loop = function(pos,digger)
+upgrade_veinminer_loop = function(pos,digger)
 
 	local min = {x=pos.x-1,y=pos.y-1,z=pos.z-1}
 	local max = {x=pos.x+1,y=pos.y+1,z=pos.z+1}
@@ -37,7 +23,7 @@ veinminer_loop = function(pos,digger)
 						data[p_pos] = air
 						
 						minetest.after(0,function(pos2)
-							veinminer_loop(pos2)
+							upgrade_veinminer_loop(pos2)
 						end, pos2)
 						local item = minetest.get_node_drops(name)[1]
 						minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, item)	
