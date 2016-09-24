@@ -61,6 +61,8 @@ minetest.register_entity("rs:r", { --basic minecart
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
+		
+
 		if self.speedup == true then
 			self.speed = self.speed + dtime
 		else
@@ -71,9 +73,11 @@ minetest.register_entity("rs:r", { --basic minecart
 				end
 			end
 		end
+
 		
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
+		
 		if vel.y < 0 then
 			self.object:set_animation({x=0,y=0},0, 0)
 		elseif vel.y > 0 then
@@ -81,23 +85,27 @@ minetest.register_entity("rs:r", { --basic minecart
 		else
 			self.object:set_animation({x=45,y=45},0, 0)
 		end
+
 		
-		--self.speed = 5
-		if self.dir_x ~= 0 and vel.x == 0 then
-			if minetest.get_node({x=pos.x,y=pos.y,z=pos.z+1}).name == "air" then
+		if vel.x == 0 and self.dir_x ~= 0 then
+			if minetest.get_node({x=pos.x,y=pos.y-1.3,z=pos.z + 0.6}).name == "air" then
+				print("test1")
+				self.dir_x = 0
 				self.dir_z = 1
+			elseif minetest.get_node({x=pos.x,y=pos.y-1.3,z=pos.z - 0.6}).name == "air" then
+				print("test2")
 				self.dir_x = 0
-			elseif minetest.get_node({x=pos.x,y=pos.y,z=pos.z-1}).name == "air" then
 				self.dir_z = -1
-				self.dir_x = 0
 			end
-		elseif self.dir_z ~= 0 and vel.z == 0 then
-			if minetest.get_node({x=pos.x+1,y=pos.y,z=pos.z}).name == "air" then
+		elseif vel.z == 0 and self.dir_z ~= 0 then
+			if minetest.get_node({x=pos.x + 0.6, y=pos.y-1.3,z=pos.z}).name == "air" then
+				print("test3")
+				self.dir_z = 0
 				self.dir_x = 1
+			elseif minetest.get_node({x=pos.x - 0.6, y=pos.y-1.3,z=pos.z}).name == "air" then
+				print("test4")
 				self.dir_z = 0
-			elseif minetest.get_node({x=pos.x-1,y=pos.y,z=pos.z}).name == "air" then
 				self.dir_x = -1
-				self.dir_z = 0
 			end
 		end
 		
