@@ -109,7 +109,7 @@ minetest.register_entity("rs:r", { --basic minecart
 			end
 		end
 		
-		self.goal = {x=self.dir_x*self.speed,y=-10,z=self.dir_z*self.speed}
+		self.goal = {x=self.dir_x*self.speed,y=-10*(self.speed+1),z=self.dir_z*self.speed}
 		
 		self.object:setvelocity(self.goal)
 
