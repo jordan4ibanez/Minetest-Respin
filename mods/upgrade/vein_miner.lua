@@ -16,8 +16,6 @@ upgrade_veinminer_loop = function(pos,digger)
 				local pos2 = {x=pos.x+x,y=pos.y+y,z=pos.z+z}
 				local name = minetest.get_name_from_content_id(data[p_pos])
 				
-				
-				
 				if placed == nil or placed == "" then
 					if string.match(name, "stone_with_") then
 						data[p_pos] = air
@@ -26,7 +24,8 @@ upgrade_veinminer_loop = function(pos,digger)
 							upgrade_veinminer_loop(pos2)
 						end, pos2)
 						local item = minetest.get_node_drops(name)[1]
-						minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, item)	
+						minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, item)
+						
 					end
 				end
 			end
