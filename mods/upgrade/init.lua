@@ -144,6 +144,9 @@ end
 -- hard coded for simplicity sake
 
 minetest.register_on_dignode(function(pos, oldnode, digger)
+	if digger == nil then
+		return
+	end
 	local item = digger:get_wielded_item():to_string()
 	--find if item is pick/axe/shovel
 	local inv = digger:get_inventory()
