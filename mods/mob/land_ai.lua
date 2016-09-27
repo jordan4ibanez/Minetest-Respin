@@ -142,8 +142,17 @@ function register_mob_land(name, def)
 			end
 		end
 		--mob falling damage -- 5 node fall
+		
+		-- change this to a def of falling distance before pain
 		if vel.y == 0 and self.last_vel_y < -5 then
-			print("pain")
+			local hp = self.object:get_hp()
+			local hurt = math.abs(self.last_vel_y + 5) 
+			self.object:set_hp(hp - hurt)
+			minetest.sound_play(def.hurt_sound, {
+				pos = pos,
+				max_hear_distance = 10,
+				gain = 10.0,
+			})
 		end
 		self.last_vel_y = vel.y
 		--swim wherever it's going, and do particles on splash with sound
