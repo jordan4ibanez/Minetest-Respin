@@ -1,3 +1,8 @@
+local disable = true
+if disable == true then
+	return
+end
+print("\n\n\n\n\n\n\nFAIL")
 minetest.register_craftitem("upgrade:rsamble", {
 	description = "",
 	inventory_image = ".png",
@@ -146,7 +151,7 @@ function auto_smelt_function(oldnode, pos)
 			minetest.add_item(pos, result)
 		end,pos,result)
 	else
-		print("Test")
+		--print("Test")
 		local item = minetest.get_node_drops(oldnode)[1]
 		local result,_  = minetest.get_craft_result({method = "cooking", width = 1, items = {item}}).item
 		if result:to_string() ~= "" then

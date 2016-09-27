@@ -1,6 +1,5 @@
 
 borer_function = function(pos,digger,radius,item,autoladder,vein_miner,auto_smelt)
-	print("\n\n\n\nMAKE THIS AUTOSMELT TOO!")
 	local min = {x=pos.x-radius,y=pos.y-radius,z=pos.z-radius}
 	local max = {x=pos.x+radius,y=pos.y+radius,z=pos.z+radius}
 	local vm = minetest.get_voxel_manip()	
