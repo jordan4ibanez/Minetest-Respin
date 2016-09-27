@@ -139,9 +139,48 @@ function register_mob_land(name, def)
 				end
 			end
 		end
-		--swim wherever it's going
+		--mob falling damage
+		if vel.y < -4 and below2 == true then
+			print("pain")
+		end
+		--swim wherever it's going, and do particles on splash with sound
+		if self.old_water == false and minetest.get_item_group(node_center, "water") ~= 0 then
+			minetest.add_particlespawner({
+				 amount = 10,
+				 time = 0.1,
+				 minpos = {x=pos.x-0.7, y=pos.y, z=pos.z-0.7},
+				 maxpos = {x=pos.x+0.7, y=pos.y+1, z=pos.z+0.7},
+				 minvel = {x=0, y=0.5, z=0},
+				 maxvel = {x=0, y=1, z=0},
+				 minacc = {x=0, y=0, z=0},
+				 maxacc = {x=0, y=0, z=0},
+				 minexptime = 1,
+				 maxexptime = 1,
+				 minsize = 1,
+				 maxsize = 2,
+				 collisiondetection = false,
+				 vertical = false,
+				 texture = "bubble.png",
+			})
+			--sound depends on if mob falls into water
+			if vel.y < -4 then
+				minetest.sound_play("land_splash_big", {
+					pos = pos,
+					max_hear_distance = 10,
+					gain = 10.0,
+				})
+			else
+				minetest.sound_play("land_splash", {
+					pos = pos,
+					max_hear_distance = 3,
+					gain = 10.0,
+				})
+			end
+		end
+		self.old_water = false
 		if minetest.get_item_group(node_center, "water") > 0 then
 			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=1 - vel.y,z=self.vel_goal_z - vel.z})
+			self.old_water = true
 		end
 		
 		--change the animation speed based on how fast the mob moves
