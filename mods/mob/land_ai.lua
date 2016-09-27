@@ -26,6 +26,8 @@ function register_mob_land(name, def)
 	vel_goal_z = 0,
 	used = false,
 	
+	last_vel_y = 0,
+	old_water = false,
 	--punch function
 	on_punch = function(self)
 		--drop stuff on die
@@ -139,10 +141,11 @@ function register_mob_land(name, def)
 				end
 			end
 		end
-		--mob falling damage
-		if vel.y < -4 and below2 == true then
+		--mob falling damage -- 5 node fall
+		if vel.y == 0 and self.last_vel_y < -5 then
 			print("pain")
 		end
+		self.last_vel_y = vel.y
 		--swim wherever it's going, and do particles on splash with sound
 		if self.old_water == false and minetest.get_item_group(node_center, "water") ~= 0 then
 			minetest.add_particlespawner({
