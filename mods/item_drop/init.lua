@@ -408,6 +408,9 @@ core.register_entity(":__builtin:item", {
 		local v = self.object:getvelocity()
 
 		if not core.registered_nodes[nn] or core.registered_nodes[nn].walkable and v.y == 0 or minetest.get_item_group(node_center.name, "water") > 0 then
+			if minetest.get_item_group(node_center.name, "water") > 0 then --start floating
+				self.physical_state = true
+			end
 			if self.physical_state then
 				local own_stack = ItemStack(self.object:get_luaentity().itemstring)
 				-- Merge with close entities of the same item
