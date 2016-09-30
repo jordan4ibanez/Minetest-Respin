@@ -393,6 +393,7 @@ core.register_entity(":__builtin:item", {
 		local p = self.object:getpos()
 		p.y = p.y - 0.5
 		local node = core.get_node_or_nil(p)
+		local node_center = core.get_node_or_nil({x=p.x,y=p.y+0.5,z=p.z})
 		local in_unloaded = (node == nil)
 		if in_unloaded then
 			-- Don't infinetly fall into unloaded map
@@ -405,7 +406,8 @@ core.register_entity(":__builtin:item", {
 		local nn = node.name
 		-- If node is not registered or node is walkably solid and resting on nodebox
 		local v = self.object:getvelocity()
-		if not core.registered_nodes[nn] or core.registered_nodes[nn].walkable and v.y == 0 then
+
+		if not core.registered_nodes[nn] or core.registered_nodes[nn].walkable and v.y == 0 or minetest.get_item_group(node_center.name, "water") > 0 then
 			if self.physical_state then
 				local own_stack = ItemStack(self.object:get_luaentity().itemstring)
 				-- Merge with close entities of the same item
@@ -418,13 +420,21 @@ core.register_entity(":__builtin:item", {
 						end
 					end
 				end
-				self.object:setvelocity({x = 0, y = 0, z = 0})
-				self.object:setacceleration({x = 0, y = 0, z = 0})
-				self.physical_state = false
-				self.object:set_properties({physical = false})
+				--float or stand
+				if minetest.get_item_group(node_center.name, "water") > 0 then
+					self.object:setacceleration({x=0 - v.x,y=1 - v.y,z=0 - v.z})
+				else
+					self.object:setvelocity({x = 0, y = 0, z = 0})
+					self.object:setacceleration({x = 0, y = 0, z = 0})
+					self.physical_state = false
+					self.object:set_properties({physical = false})
+				end
 			end
 		else
-			if not self.physical_state then
+			if minetest.get_item_group(node_center.name, "water") == 0 then
+				--sink
+				self.object:setacceleration({x = 0, y = -10, z = 0})
+			elseif not self.physical_state then
 				self.object:setvelocity({x = 0, y = 0, z = 0})
 				self.object:setacceleration({x = 0, y = -10, z = 0})
 				self.physical_state = true
