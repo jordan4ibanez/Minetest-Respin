@@ -280,7 +280,7 @@ function register_mob_land(name, def)
 		end
 		
 		--"collision detection"
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 0.5)) do
+		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 1)) do
 			if not object:is_player() and object ~= self.object then
 				if object:get_luaentity().mob then
 					local pos2 = object:getpos()
