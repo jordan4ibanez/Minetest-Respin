@@ -1,6 +1,7 @@
 --The AI for the land mobs
 function register_mob_land(name, def)
 	minetest.register_entity("mob:"..name, {
+	mob          = true,
 	hp_max       = def.hp,
 	physical     = true,
 	collisionbox = def.collisionbox,
@@ -84,6 +85,7 @@ function register_mob_land(name, def)
 		self.object:setacceleration({x=0,y=-10,z=0})
 		self.object:set_animation({x=def.walk_start,y=def.walk_end},def.normal_speed, 0)
 		local pos = self.object:getpos()
+		--[[
 		minetest.add_particlespawner({
 			 amount = 40,
 			 time = 0.1,
@@ -101,6 +103,7 @@ function register_mob_land(name, def)
 			 vertical = false,
 			 texture = "spawn_smoke.png",
 		})
+		]]--
 		--minetest.sound_play("poof", {
 		--	pos = pos,
 		--	max_hear_distance = 100,
@@ -274,6 +277,51 @@ function register_mob_land(name, def)
 				end
 			end
 			
+		end
+		
+		--"collision detection"
+		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 0.5)) do
+			if not object:is_player() and object ~= self.object then
+				if object:get_luaentity().mob then
+					local pos2 = object:getpos()
+					local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if pos.x > pos2.x then
+						yaw = yaw+math.pi
+					end
+					--self.object:setyaw(yaw)
+					local v = def.max_speed
+					local x = math.sin(yaw) * -v
+					local z = math.cos(yaw) * v
+					if self.old_water == true then
+						self.object:setacceleration({x=x,y=1 - vel.y,z=z})
+					else
+						self.object:setacceleration({x=x,y=-10,z=z})
+					end
+				end
+			elseif object:is_player() then
+				local pos2 = object:getpos()
+				local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+				local yaw = math.atan(vec.z/vec.x)+math.pi/2
+				if self.drawtype == "side" then
+					yaw = yaw+(math.pi/2)
+				end
+				if pos.x > pos2.x then
+					yaw = yaw+math.pi
+				end
+				--self.object:setyaw(yaw)
+				local v = def.max_speed
+				local x = math.sin(yaw) * -v
+				local z = math.cos(yaw) * v
+				if self.old_water == true then
+					self.object:setacceleration({x=x,y=1 - vel.y,z=z})
+				else
+					self.object:setacceleration({x=x,y=-10,z=z})
+				end
+			end
 		end
 	
 	end,

@@ -1,6 +1,7 @@
 
 function register_mob_water(name, def)
 	minetest.register_entity("mob:"..name, {
+	mob          = true,
 	hp_max       = def.health,
 	physical     = true,
 	collisionbox = def.collisionbox,
@@ -257,6 +258,29 @@ function register_mob_water(name, def)
 				self.vel_goal_x = math.random(-def.max_speed,def.max_speed)*math.random()
 				self.vel_goal_z = math.random(-def.max_speed,def.max_speed)*math.random()
 				self.vel_goal_y = math.random(-def.max_speed,def.max_speed)*math.random()
+			end
+		end
+		--"collision detection"
+		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 1)) do
+			if not object:is_player() and object ~= self.object then
+				if object:get_luaentity().mob then
+					local pos2 = object:getpos()
+					local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if pos.x > pos2.x then
+						yaw = yaw+math.pi
+					end
+					--self.object:setyaw(yaw)
+					local v = def.max_speed
+					local x = math.sin(yaw) * -v
+					local z = math.cos(yaw) * v
+
+					self.object:setacceleration({x=x,y=-10,z=z})
+				end
+			--elseif object:is_player()
 			end
 		end
 	end,

@@ -48,7 +48,7 @@ minetest.register_craft({
 register_mob_land("sheep", {
 --self params
 hp           = 10,
-collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+collisionbox = {-0.5, 0.0, -0.5, 0.5, 1.0, 0.5},
 visual       = "mesh",
 mesh         = "mobs_sheep.x",
 textures     = {"mobs_sheep.png"},
@@ -65,7 +65,7 @@ walk_end     = 100,
 --world/behavior params
 hostile      = false,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.001, --amount of mobs to spawn
+fill_ratio   = 0.07, --amount of mobs to spawn
 max_speed    = 2,
 
 tool         = "mob:shears",
@@ -76,7 +76,7 @@ hurt_sound   = "sheep",
 
 register_mob_land("zombie", {
 --self params
-collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
 visual       = "mesh",
 mesh         = "zombie.b3d",
 textures     = {"zombie.png"},
@@ -93,8 +93,8 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.001, --amount of mobs to spawn 
-max_speed    = 3,
+fill_ratio   = 0.01, --amount of mobs to spawn 
+max_speed    = 4,
 chase_rad    = 15,
 attack_rad   = 1,
 health       = 20,

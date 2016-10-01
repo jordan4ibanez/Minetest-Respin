@@ -29,7 +29,7 @@ minetest.register_node("sponge:sponge_wet", {
 	end,
 	on_dig = function(pos, node, player)
 		sponge_function_destroy(pos)
-		 minetest.node_dig(pos, node, player)
+		minetest.node_dig(pos, node, player)
 	end,
 })
 
@@ -73,11 +73,11 @@ minetest.register_craft({
 
 --suck up water
 sponge_function = function(pos)
-	minetest.sound_play("sponge_absorb", {
-		pos = pos,
-		max_hear_distance = 10,
-		gain = 10.0,
-	})
+	--minetest.sound_play("sponge_absorb", {
+	--	pos = pos,
+	--	max_hear_distance = 10,
+	--	gain = 10.0,
+	--})
 	local radius = 2
 	local min = {x=pos.x-radius,y=pos.y-radius,z=pos.z-radius}
 	local max = {x=pos.x+radius,y=pos.y+radius,z=pos.z+radius}
