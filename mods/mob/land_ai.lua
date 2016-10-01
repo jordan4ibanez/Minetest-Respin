@@ -12,14 +12,14 @@ function register_mob_land(name, def)
 	
 	automatic_face_movement_dir = def.dir,
 	yaw = 0,
-
+	attack_timer = 0,
 	
 	jump = false,
 	fall = false,
 	
 	timer = 0,
 	makes_footstep_sound = true,
-	--stepheight = 1, --2 for not jumping
+	stepheight = 1, --2 for not jumping
 	collide_with_objects = false,
 	timer_max = 0,
 	vel_goal_x = 0,
@@ -120,7 +120,7 @@ function register_mob_land(name, def)
 	--what the mob does in the world
 	on_step = function(self, dtime)
 		self.timer = self.timer + dtime
-
+		self.attack_timer = self.attack_timer + dtime
 		
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
@@ -128,12 +128,25 @@ function register_mob_land(name, def)
 		
 		--if there is a walkable node try to jump unless it's a fence
 		--if in water, swim up
-		local node = minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y + 0.5, z=pos.z+self.vel_goal_z}).name
+		local node_goal_x = 0
+		if self.vel_goal_x > 0 then
+			node_goal_x = 1
+		elseif self.vel_goal_x < 0 then
+			node_goal_x = -1
+		end
+		local node_goal_z = 0
+		if self.vel_goal_z > 0 then
+			node_goal_z = 1
+		elseif self.vel_goal_z < 0 then
+			node_goal_z = -1
+		end
+				
+		local node = minetest.get_node({x=pos.x + node_goal_x, y=pos.y +def.collisionbox[2] + 0.5, z=pos.z+node_goal_z}).name
 		local walkable = minetest.registered_items[node].walkable
 		local fence = minetest.get_item_group(node, "fence")
-		local below = minetest.get_node({x=pos.x, y=pos.y - 0.1, z=pos.z}).name
+		local below = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] -  0.1, z=pos.z}).name
 		local below2 = minetest.registered_items[below].walkable
-		local node_center = minetest.get_node({x=pos.x, y=pos.y + 0.5, z=pos.z}).name
+		local node_center = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] + 0.5, z=pos.z}).name
 		if walkable == true then
 			if fence == 0 then
 				if below2 == true then
@@ -210,6 +223,7 @@ function register_mob_land(name, def)
 		end
 		
 		--this section changes if the mob moves or stands still based on an internal timer
+		
 		if self.timer > self.timer_max then
 			--change velocity goal
 			--print("change velocity goal")
@@ -226,7 +240,48 @@ function register_mob_land(name, def)
 			end
 			
 		end
-		
+		--chase player
+		if self.hostile == true then
+			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.chase_rad)) do
+				if object:is_player() then
+					--modified simplemobs api
+					local pos2 = object:getpos()
+					local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+					local yaw = math.atan(vec.z/vec.x)+math.pi/2
+					if self.drawtype == "side" then
+						yaw = yaw+(math.pi/2)
+					end
+					if pos.x > pos2.x then
+						yaw = yaw+math.pi
+					end
+					--self.object:setyaw(yaw)
+					local v = def.max_speed
+					local x = math.sin(yaw) * v
+					local y = -vec.y
+					local z = math.cos(yaw) * -v
+					if y > def.max_speed then
+						y = def.max_speed
+					elseif y < -def.max_speed then
+						y = -def.max_speed
+					end
+					self.vel_goal_x = x
+					self.vel_goal_y = y
+					self.vel_goal_z = z						
+					
+					for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
+						if object:is_player() then
+							if self.attack_timer > def.attack_cooldown then
+								object:set_hp(object:get_hp()-def.attack_damage)
+								self.attack_timer = 0
+							end
+						end
+					end
+					break
+				end
+			end
+			
+		end
+	
 	end,
 	})
 

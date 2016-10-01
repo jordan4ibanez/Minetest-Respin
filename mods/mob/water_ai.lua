@@ -132,7 +132,20 @@ function register_mob_water(name, def)
 		
 		--if fish is out of water then flop around
 
-		local node = minetest.get_node({x=pos.x + self.vel_goal_x, y=pos.y +def.collisionbox[2] + 0.5, z=pos.z+self.vel_goal_z}).name
+		local node_goal_x = 0
+		if self.vel_goal_x > 0 then
+			node_goal_x = 1
+		elseif self.vel_goal_x < 0 then
+			node_goal_x = -1
+		end
+		local node_goal_z = 0
+		if self.vel_goal_z > 0 then
+			node_goal_z = 1
+		elseif self.vel_goal_z < 0 then
+			node_goal_z = -1
+		end
+				
+		local node = minetest.get_node({x=pos.x + node_goal_x, y=pos.y +def.collisionbox[2] + 0.5, z=pos.z+node_goal_z}).name
 		local walkable = minetest.registered_items[node].walkable
 		local fence = minetest.get_item_group(node, "fence")
 		local below = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] -  0.1, z=pos.z}).name

@@ -74,7 +74,37 @@ drop         = "mob:raw_meat",
 hurt_sound   = "sheep",
 })
 
+register_mob_land("zombie", {
+--self params
+collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+visual       = "mesh",
+mesh         = "zombie.b3d",
+textures     = {"zombie.png"},
+dir          = -90,
+size         = 1,
 
+--animation params
+normal_speed = 15,
+stand_start  = 0,
+stand_end    = 80,
+walk_start   = 102,
+walk_end     = 121,
+
+--world/behavior params
+hostile      = true,
+spawn_on     = "default:dirt_with_grass",
+fill_ratio   = 0.001, --amount of mobs to spawn 
+max_speed    = 3,
+chase_rad    = 15,
+attack_rad   = 1,
+health       = 20,
+attack_cooldown = 1,
+attack_damage = 2,
+
+drop         = "default:glass",
+
+})
+--[[[
 register_mob_land("cow", {
 --self params
 collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
@@ -99,7 +129,7 @@ max_speed    = 3,
 
 drop         = "default:glass",
 
-})
+})]]--
 
 register_mob_water("fish", {
 --self params
