@@ -65,7 +65,7 @@ walk_end     = 100,
 --world/behavior params
 hostile      = false,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.07, --amount of mobs to spawn
+fill_ratio   = 0.007, --amount of mobs to spawn
 max_speed    = 2,
 
 tool         = "mob:shears",
@@ -93,13 +93,80 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.01, --amount of mobs to spawn 
+fill_ratio   = 0.001, --amount of mobs to spawn 
 max_speed    = 4,
 chase_rad    = 15,
 attack_rad   = 1,
 health       = 20,
 attack_cooldown = 1,
 attack_damage = 2,
+attack_sound = "zombie_hit",
+hurt_sound   = "zombie_death",
+
+drop         = "default:glass",
+
+})
+register_mob_land("robot", {
+--self params
+collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
+visual       = "mesh",
+mesh         = "zombie.b3d",
+textures     = {"robot.png"},
+dir          = -90,
+size         = 3,
+
+--animation params
+normal_speed = 7,
+stand_start  = 0,
+stand_end    = 80,
+walk_start   = 102,
+walk_end     = 121,
+
+--world/behavior params
+hostile      = true,
+spawn_on     = "default:dirt_with_grass",
+fill_ratio   = 0.001, --amount of mobs to spawn 
+max_speed    = 4,
+chase_rad    = 15,
+attack_rad   = 5,
+health       = 20,
+attack_cooldown = 1,
+attack_damage = 2,
+attack_sound = "robot_hit",
+hurt_sound   = "robot_hurt",
+
+drop         = "default:glass",
+
+})
+
+
+register_mob_land("giant", {
+--self params
+collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
+visual       = "mesh",
+mesh         = "zombie.b3d",
+textures     = {"character.png"},
+dir          = -90,
+size         = 10,
+
+--animation params
+normal_speed = 2,
+stand_start  = 0,
+stand_end    = 80,
+walk_start   = 102,
+walk_end     = 121,
+
+--world/behavior params
+hostile      = true,
+spawn_on     = "default:dirt_with_grass",
+fill_ratio   = 0.0001, --amount of mobs to spawn 
+max_speed    = 10,
+chase_rad    = 15,
+attack_rad   = 1,
+health       = 40,
+attack_cooldown = 1,
+attack_damage = 2,
+attack_sound = "giant_attack",
 
 drop         = "default:glass",
 

@@ -65,3 +65,6 @@ product, an acknowledgment in the product documentation is required.
 be misrepresented as being the original software.
 
 3. This notice may not be removed or altered from any source distribution.
+
+
+Robot skin from http://minetest.fensta.bplaced.net/

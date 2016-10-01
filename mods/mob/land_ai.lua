@@ -270,6 +270,11 @@ function register_mob_land(name, def)
 							if self.attack_timer > def.attack_cooldown then
 								object:set_hp(object:get_hp()-def.attack_damage)
 								self.attack_timer = 0
+								minetest.sound_play(def.attack_sound, {
+									pos = pos,
+									max_hear_distance = 10,
+									gain = 10.0,
+								})
 							end
 						end
 					end
