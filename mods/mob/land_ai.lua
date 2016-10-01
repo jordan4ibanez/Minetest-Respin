@@ -257,15 +257,9 @@ function register_mob_land(name, def)
 					--self.object:setyaw(yaw)
 					local v = def.max_speed
 					local x = math.sin(yaw) * v
-					local y = -vec.y
 					local z = math.cos(yaw) * -v
-					if y > def.max_speed then
-						y = def.max_speed
-					elseif y < -def.max_speed then
-						y = -def.max_speed
-					end
+
 					self.vel_goal_x = x
-					self.vel_goal_y = y
 					self.vel_goal_z = z						
 					
 					for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
