@@ -1,4 +1,3 @@
---make fish jump when on land and go no where
 
 function register_mob_water(name, def)
 	minetest.register_entity("mob:"..name, {
@@ -169,18 +168,30 @@ function register_mob_water(name, def)
 			if self.hostile == true then
 				for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.chase_rad)) do
 					if object:is_player() then
-				--modified simplemobs api
-									
-						local pos1 = pos
-						--pos1.y = pos1.y+item_drop_settings.player_collect_height
+						--modified simplemobs api
 						local pos2 = object:getpos()
-						local vec = {x=pos1.x-pos2.x, y=pos1.y-pos2.y, z=pos1.z-pos2.z}
-						--vec.x = vec.x
-						--vec.y = vec.y
-						--vec.z = vec.z
-						self.vel_goal_x = (vec.x*-1) -- this is a lazy workaround
-						self.vel_goal_y = (vec.y*-1)
-						self.vel_goal_z = (vec.z*-1)
+						local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+						local yaw = math.atan(vec.z/vec.x)+math.pi/2
+						if self.drawtype == "side" then
+							yaw = yaw+(math.pi/2)
+						end
+						if pos.x > pos2.x then
+							yaw = yaw+math.pi
+						end
+						--self.object:setyaw(yaw)
+						local v = def.max_speed
+						local x = math.sin(yaw) * v
+						local y = -vec.y
+						local z = math.cos(yaw) * -v
+						if y > def.max_speed then
+							y = def.max_speed
+						elseif y < -def.max_speed then
+							y = -def.max_speed
+						end
+						self.vel_goal_x = x
+						self.vel_goal_y = y
+						self.vel_goal_z = z						
+						
 						for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
 							if object:is_player() then
 								if self.attack_timer > def.attack_cooldown then
