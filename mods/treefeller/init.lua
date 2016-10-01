@@ -31,17 +31,22 @@ treefeller_loop = function(pos,digger)
 				local p_pos = area:index(pos.x+x,pos.y+y,pos.z+z)
 				local pos2 = {x=pos.x+x,y=pos.y+y,z=pos.z+z}
 				local name = minetest.get_name_from_content_id(data[p_pos])
-				
-				
+				local meta = minetest.get_meta(pos2)
+				local is_tree = meta:get_string("tree")
 				
 				if placed == nil or placed == "" then
 					if minetest.get_item_group(name, "tree") ~= 0 then
-						data[p_pos] = air
+						if is_tree == "" then
+							data[p_pos] = air
+							minetest.after(0,function(pos2)
+								treefeller_loop(pos2)
+							end, pos2)
+							minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, name)
+						end
 						
-						minetest.after(0,function(pos2)
-							treefeller_loop(pos2)
-						end, pos2)
-						minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, name)
+						
+						
+						--the rest of this is hidden functionality 
 						--treecapitator.wear_tool(inv)
 						--if inv:room_for_item("main", name) == true then
 						--	inv:add_item("main", name)
@@ -94,3 +99,31 @@ treefeller_loop = function(pos,digger)
 	vm:write_to_map()
 	vm:update_map()
 end
+--placed trees have meta, so they don't get destroyed
+--useful for building things from tree, like tree wall, with tree farm inside
+--it's a bit ridiculous to do this though
+for name,definition in pairs(minetest.registered_nodes) do
+	if definition.groups.tree ~= nil then
+		minetest.override_item(name, {
+			on_place = function(itemstack, placer, pointed_thing)
+				
+				--patch in buildable_to function
+				local replace = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name].buildable_to
+				minetest.rotate_node(itemstack, placer, pointed_thing)
+				if replace == true then
+					local meta = minetest.get_meta(pointed_thing.under)
+					if is_tree ~= 0 then
+						meta:set_string("tree", "true")
+					end
+				elseif replace == false then
+					local meta = minetest.get_meta(pointed_thing.above)
+					if is_tree ~= 0 then
+						meta:set_string("tree", "true")
+					end
+				end
+				
+			end
+		})
+	end
+end
+
