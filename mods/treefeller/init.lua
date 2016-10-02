@@ -112,14 +112,10 @@ for name,definition in pairs(minetest.registered_nodes) do
 				minetest.rotate_node(itemstack, placer, pointed_thing)
 				if replace == true then
 					local meta = minetest.get_meta(pointed_thing.under)
-					if is_tree ~= 0 then
-						meta:set_string("tree", "true")
-					end
+					meta:set_string("tree", "true")
 				elseif replace == false then
 					local meta = minetest.get_meta(pointed_thing.above)
-					if is_tree ~= 0 then
-						meta:set_string("tree", "true")
-					end
+					meta:set_string("tree", "true")
 				end
 				
 			end
