@@ -147,7 +147,7 @@ drop         = "default:glass",
 
 register_mob_land("giant", {
 --self params
-collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
+collisionbox = {-1.6, 0.0, -1.6, 1.6, 3.8, 1.6},
 visual       = "mesh",
 mesh         = "zombie.b3d",
 textures     = {"character.png"},

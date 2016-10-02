@@ -30,10 +30,11 @@ function register_mob_land(name, def)
 	last_vel_y = 0,
 	old_water = false,
 	--punch function
-	on_punch = function(self)
+	on_punch = function(self,puncher)
 		--drop stuff on die
+		local pos = self.object:getpos()
 		if self.object:get_hp() <= 0 then
-			local pos = self.object:getpos()
+			
 			pos.y = pos.y + 0.5
 			minetest.add_item(pos, def.drop)
 			minetest.add_particlespawner({
@@ -59,6 +60,25 @@ function register_mob_land(name, def)
 				gain = 10.0,
 			})
 		else
+			local below = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] -  0.1, z=pos.z}).name
+			local below2 = minetest.registered_items[below].walkable
+			if puncher ~= nil and below2 == true then
+				local pos2 = puncher:getpos()
+				local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+				local yaw = math.atan(vec.z/vec.x)+math.pi/2
+				if self.drawtype == "side" then
+					yaw = yaw+(math.pi/2)
+				end
+				if pos.x > pos2.x then
+					yaw = yaw+math.pi
+				end
+				--self.object:setyaw(yaw)
+				local v = def.max_speed
+				local x = math.sin(yaw) * -v
+				local z = math.cos(yaw) * v
+				self.object:setvelocity({x=x,y=5,z=z})
+				
+			end
 			self.object:settexturemod("^[colorize:#ff0000:60")
 			minetest.after(0.5, function(self)
 				if self == nil then
