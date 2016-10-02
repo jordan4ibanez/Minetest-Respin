@@ -1111,7 +1111,6 @@ minetest.register_node("default:grass_1", {
 	buildable_to = true,
 	groups = {flora = 1, attached_node = 1, grass = 1, dig_immediate = 3},
 	sounds = default.node_sound_leaves_defaults(),
-	drop = "farming:wheat",
 	drop = {
 			max_items = 1, 
 			items = { 
@@ -1139,7 +1138,6 @@ for i = 2, 5 do
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		drop = "farming:wheat",
 		drop = {
 			max_items = 1, 
 			items = { 
