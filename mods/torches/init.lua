@@ -2,12 +2,12 @@
 --
 -- 3d torch part
 --
-minetest.register_lbm({
-	name = "torches:remove_fire",
-	nodenames = {"default:torch", "default:torch_wall"},
-	run_at_every_load = true,
-	action = function(pos, node)
-		minetest.add_particlespawner({
+
+torch_particle_table = {}
+
+local function torch_particles(pos)
+	if torch_particle_table[pos] == nil then
+		local id = minetest.add_particlespawner({
 			amount = 5,
 			time = 0,
 			minpos = {x=pos.x-0.1,y=pos.y+0.1,z=pos.z-0.1},
@@ -24,6 +24,30 @@ minetest.register_lbm({
 			vertical = false,
 			texture = "torch_smoke.png",
 		})
+		
+		if torch_particle_table[pos.x] == nil then
+			torch_particle_table[pos.x] = {}
+		end
+		if torch_particle_table[pos.x][pos.y] == nil then
+			torch_particle_table[pos.x][pos.y] = {}
+		end
+		if torch_particle_table[pos.x][pos.y][pos.z] == nil then
+			torch_particle_table[pos.x][pos.y][pos.z] = id
+		end
+	end
+end
+local function destroy_torch_particles(pos)
+	if torch_particle_table[pos.x][pos.y][pos.z] ~= nil then
+		print(torch_particle_table[pos.x][pos.y][pos.z])
+		minetest.delete_particlespawner(torch_particle_table[pos.x][pos.y][pos.z])
+	end
+end
+minetest.register_lbm({
+	name = "torches:remove_fire",
+	nodenames = {"default:torch", "default:torch_wall"},
+	run_at_every_load = true,
+	action = function(pos, node)
+		torch_particles(pos)
 	end,
 })
 
@@ -65,11 +89,26 @@ minetest.register_node(":default:torch", {
 		if not retval then
 			return itemstack
 		end
+		--patch in buildable_to function
+		local replace = minetest.registered_nodes[minetest.get_node(pointed_thing.under).name].buildable_to
+		if replace == true then
+			torch_particles(pointed_thing.under)
+		elseif replace == false then
+			torch_particles(pointed_thing.above)
+		end
 		itemstack, retval = minetest.item_place(fakestack, placer, pointed_thing, wdir)
+
 		itemstack:set_name("default:torch")
 
 		return itemstack
-	end
+	end,
+	after_destruct = function(pos, oldnode)
+		destroy_torch_particles(pos)
+	end,
+	on_dig = function(pos, node, player)
+		destroy_torch_particles(pos)
+		minetest.node_dig(pos, node, player)
+	end,
 })
 
 minetest.register_node(":default:torch_wall", {
@@ -93,6 +132,13 @@ minetest.register_node(":default:torch_wall", {
 		wall_side = {-0.5, -0.3, -0.1, -0.2, 0.3, 0.1},
 	},
 	sounds = default.node_sound_wood_defaults(),
+	after_destruct = function(pos, oldnode)
+		destroy_torch_particles(pos)
+	end,
+	on_dig = function(pos, node, player)
+		destroy_torch_particles(pos)
+		minetest.node_dig(pos, node, player)
+	end,
 })
 
 minetest.register_lbm({
