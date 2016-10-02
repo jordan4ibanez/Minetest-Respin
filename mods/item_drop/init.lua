@@ -70,9 +70,11 @@ minetest.register_globalstep(function(dtime)
 								physical = false
 							})
 							object:setacceleration({x=0, y=0, z=0})
+							object:setvelocity({x=0, y=0, z=0})
 							--fix eternally falling items
 							minetest.after(0, function()
 								object:setacceleration({x=0, y=0, z=0})
+								object:setvelocity({x=0, y=0, z=0})
 							end)
 							
 							
