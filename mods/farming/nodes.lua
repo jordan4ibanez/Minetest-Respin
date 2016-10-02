@@ -151,7 +151,7 @@ for i = 1, 5 do
 	minetest.override_item("default:dry_grass_"..i, {drop = {
 		max_items = 1,
 		items = {
-			{items = {'farming:seed_wheat'},rarity = i * 6},
+			{items = {'farming:seed_cotton'},rarity = i * 6},
 		}
 	}})
 end
@@ -159,7 +159,7 @@ for i = 1, 5 do
 	minetest.override_item("default:grass_"..i, {drop = {
 		max_items = 1,
 		items = {
-			{items = {'farming:seed_cotton'},rarity = i * 3},
+			{items = {'farming:seed_wheat'},rarity = i * 3},
 		}
 	}})
 end
