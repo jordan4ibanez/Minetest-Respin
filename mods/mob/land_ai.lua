@@ -169,6 +169,36 @@ function register_mob_land(name, def)
 				max_hear_distance = 10,
 				gain = 10.0,
 			})
+			minetest.after(0, function(self)
+				if self.object:get_hp() <= 0 then
+					local pos = self.object:getpos()
+					pos.y = pos.y + 0.5
+					minetest.add_item(pos, def.drop)
+					minetest.add_particlespawner({
+						 amount = 40,
+						 time = 0.1,
+						 minpos = {x=pos.x-0.5, y=pos.y, z=pos.z-0.5},
+						 maxpos = {x=pos.x+0.5, y=pos.y+1, z=pos.z+0.5},
+						 minvel = {x=0, y=0.5, z=0},
+						 maxvel = {x=0, y=1, z=0},
+						 minacc = {x=0, y=0, z=0},
+						 maxacc = {x=0, y=0, z=0},
+						 minexptime = 1,
+						 maxexptime = 1,
+						 minsize = 1,
+						 maxsize = 2,
+						 collisiondetection = false,
+						 vertical = false,
+						 texture = "spawn_smoke.png",
+					})
+					minetest.sound_play("poof", {
+						pos = pos,
+						max_hear_distance = 100,
+						gain = 10.0,
+					})
+					self.object:remove()
+				end
+			end,self)
 		end
 		self.last_vel_y = vel.y
 		--swim wherever it's going, and do particles on splash with sound
