@@ -176,6 +176,13 @@ function register_mob_land(name, def)
 				max_hear_distance = 10,
 				gain = 10.0,
 			})
+			self.object:settexturemod("^[colorize:#ff0000:60")
+			minetest.after(0.5, function(self)
+				if self == nil then
+					return
+				end
+				self.object:settexturemod("")
+			end, self)
 			minetest.after(0, function(self)
 				if self.object:get_hp() <= 0 then
 					local pos = self.object:getpos()
