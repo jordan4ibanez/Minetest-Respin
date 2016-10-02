@@ -28,8 +28,13 @@ minetest.register_craftitem("mob:shears", {
 minetest.register_craftitem("mob:meat_raw", {
 	description = "Raw Meat",
 	inventory_image = "mobs_meat_raw.png",
+	on_use = minetest.item_eat(2),
 })
-
+minetest.register_craft({
+	type = "cooking",
+	output = "mob:meat",
+	recipe = "mob:meat_raw",
+})
 minetest.register_craftitem("mob:meat", {
 	description = "Meat",
 	inventory_image = "mobs_meat.png",
@@ -70,7 +75,7 @@ max_speed    = 2,
 
 tool         = "mob:shears",
 alt_drop     = "wool:white",
-drop         = "mob:raw_meat",
+drop         = "mob:meat_raw",
 hurt_sound   = "sheep",
 })
 

@@ -59,6 +59,13 @@ function register_mob_land(name, def)
 				gain = 10.0,
 			})
 		else
+			self.object:settexturemod("^[colorize:#ff0000:60")
+			minetest.after(0.5, function(self)
+				if self == nil then
+					return
+				end
+				self.object:settexturemod("")
+			end, self)
 			minetest.sound_play(def.hurt_sound, {
 				pos = pos,
 				max_hear_distance = 10,
