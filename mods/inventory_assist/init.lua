@@ -14,10 +14,17 @@ minetest.register_globalstep(function(dtime)
 			if inventory_assist[player:get_player_name()]["item"] ~= "" and item == nil then
 				if inventory_assist[player:get_player_name()]["count"] == 1 then
 					--only replenish if mining or building
-					if player:get_player_control().RMB == true or player:get_player_control().LMB == true then
+					local controls = player:get_player_control()
+					if controls.RMB == true or controls.LMB == true then
 						--replenish item
 						local inv = player:get_inventory()
 						if inv:contains_item("main",  inventory_assist[player:get_player_name()]["item"]) == true then
+							local pos = player:getpos()
+							minetest.sound_play("replenish_item", {
+								pos = pos,
+								max_hear_distance = 3,
+								gain = 1.0,
+							})
 							local typer = minetest.registered_items[inventory_assist[player:get_player_name()]["item"]].type
 							local count = 0
 							if typer == "tool" then
@@ -27,7 +34,6 @@ minetest.register_globalstep(function(dtime)
 							end
 							local stack = inv:remove_item("main", inventory_assist[player:get_player_name()]["item"].." "..count)
 							player:set_wielded_item(stack)
-							return(inv)
 						end
 					end
 				end
