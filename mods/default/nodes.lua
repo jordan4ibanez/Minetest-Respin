@@ -1111,15 +1111,6 @@ minetest.register_node("default:grass_1", {
 	buildable_to = true,
 	groups = {flora = 1, attached_node = 1, grass = 1, dig_immediate = 3},
 	sounds = default.node_sound_leaves_defaults(),
-	drop = {
-			max_items = 1, 
-			items = { 
-				{
-					items = "farming:wheat",  
-					rarity = 3, 
-				},
-			},
-		},
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
@@ -1138,15 +1129,6 @@ for i = 2, 5 do
 		sunlight_propagates = true,
 		walkable = false,
 		buildable_to = true,
-		drop = {
-			max_items = 1, 
-			items = { 
-				{
-					items = "farming:wheat",  
-					rarity = i*3, 
-				},
-			},
-		},
 		groups = {flora = 1, attached_node = 1,
 			not_in_creative_inventory = 1, grass = 1, dig_immediate = 3},
 		sounds = default.node_sound_leaves_defaults(),
@@ -1169,17 +1151,8 @@ minetest.register_node("default:dry_grass_1", {
 	sunlight_propagates = true,
 	walkable = false,
 	buildable_to = true,
-	drop = {
-			max_items = 1, 
-			items = { 
-				{
-					items = "farming:wheat",  
-					rarity = 3, 
-				},
-			},
-		},
 	groups = { flammable = 3, flora = 1,
-		attached_node = 1, dry_grass = 1, dig_immediate = 3},
+	attached_node = 1, dry_grass = 1, dig_immediate = 3},
 	sounds = default.node_sound_leaves_defaults(),
 	selection_box = {
 		type = "fixed",
@@ -1201,15 +1174,6 @@ for i = 2, 5 do
 		buildable_to = true,
 		groups = { flammable = 3, flora = 1,
 		attached_node = 1, dry_grass = 1, dig_immediate = 3},
-		drop = {
-			max_items = 1, 
-			items = { 
-				{
-					items = "farming:wheat",  
-					rarity = i*3, 
-				},
-			},
-		},
 		sounds = default.node_sound_leaves_defaults(),
 		selection_box = {
 			type = "fixed",
