@@ -69,7 +69,7 @@ minetest.register_globalstep(function(dtime)
 							object:get_luaentity().object:set_properties({
 								physical = false
 							})
-							
+							object:setacceleration({x=0, y=0, z=0})
 							--fix eternally falling items
 							minetest.after(0, function()
 								object:setacceleration({x=0, y=0, z=0})

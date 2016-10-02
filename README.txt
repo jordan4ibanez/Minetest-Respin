@@ -1,3 +1,32 @@
+This is an attempt to improve singleplayer as a whole. It could transition well into multiplayer, but will most likely consume massive amounts of the host's bandwith.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Original readme:
+
 Minetest Game [minetest_game]
 =============================
 The main subgame for the Minetest engine
