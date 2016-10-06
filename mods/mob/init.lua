@@ -98,7 +98,7 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.001, --amount of mobs to spawn 
+fill_ratio   = 0.01, --amount of mobs to spawn 
 max_speed    = 4,
 chase_rad    = 15,
 attack_rad   = 1,
@@ -130,7 +130,7 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.001, --amount of mobs to spawn 
+fill_ratio   = 0.0001, --amount of mobs to spawn 
 max_speed    = 4,
 chase_rad    = 15,
 attack_rad   = 5,
@@ -140,7 +140,7 @@ attack_damage = 2,
 attack_sound = "robot_hit",
 hurt_sound   = "robot_hurt",
 
-drop         = "default:glass",
+drop         = "default:steelblock",
 
 })
 
@@ -164,7 +164,7 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.0001, --amount of mobs to spawn 
+fill_ratio   = 0.00001, --amount of mobs to spawn 
 max_speed    = 10,
 chase_rad    = 15,
 attack_rad   = 1,
@@ -248,11 +248,11 @@ walk_end     = 100,
 
 --world/behavior params
 hostile      = true,
-chase_rad    = 15,
-attack_rad   = 2.5,
+chase_rad    = 7,
+attack_rad   = 2,
 health       = 20,
 spawn_on     = "default:dirt_with_grass",
-scarcity     = 10000, --the higher the less mobs to spawn 
+scarcity     = 100000, --the higher the less mobs to spawn 
 max_speed    = 3,
 attack_cooldown = 0.5,
 attack_damage = 2,
