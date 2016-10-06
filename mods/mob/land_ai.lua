@@ -271,7 +271,7 @@ function register_mob_land(name, def)
 		end
 		self.old_water = false
 		if minetest.get_item_group(node_center, "water") > 0 then
-			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=1 - vel.y,z=self.vel_goal_z - vel.z})
+			self.object:setacceleration({x=self.vel_goal_x - vel.x,y=10 - vel.y,z=self.vel_goal_z - vel.z})
 			self.old_water = true
 		end
 		
