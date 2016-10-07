@@ -425,7 +425,29 @@ core.register_entity(":__builtin:item", {
 						end
 					end
 				end
-				--float or stand
+				--float or stand or burn
+				if minetest.get_item_group(node_center.name, "lava") > 0 then
+					local pos = self.object:getpos()
+					minetest.add_particlespawner({
+						amount = 6,
+						time = 0.1,
+						minpos = {x=pos.x-0.4,y=pos.y+0.4,z=pos.z-0.4},
+						maxpos = {x=pos.x+0.4,y=pos.y+0.4,z=pos.z+0.4},
+						minvel = {x=0, y=0, z=0},
+						maxvel = {x=0, y=0, z=0},
+						minacc = {x=0, y=0.5, z=0},
+						maxacc = {x=0, y=1, z=0},
+						minexptime = 1,
+						maxexptime = 2,
+						minsize = 1,
+						maxsize = 1,
+						collisiondetection = false,
+						vertical = false,
+						texture = "item_smoke.png",
+					})
+					minetest.sound_play("default_cool_lava",{pos = pos, max_hear_distance = 16, gain = 0.25})
+					self.object:remove()
+				end
 				if minetest.get_item_group(node_center.name, "water") > 0 then
 					self.object:setacceleration({x=0 - v.x,y=10 - v.y,z=0 - v.z})
 				else
