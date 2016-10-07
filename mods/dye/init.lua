@@ -107,3 +107,14 @@ for one, results in pairs(mixes) do
 		})
 	end
 end
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "dye:dark_green",
+	recipe = {"default:cactus"},
+})
+minetest.register_craft({
+	type = "shapeless",
+	output = "dye:green",
+	recipe = {"flowers:waterlily"},
+})
