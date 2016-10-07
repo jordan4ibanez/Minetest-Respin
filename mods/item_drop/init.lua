@@ -427,7 +427,7 @@ core.register_entity(":__builtin:item", {
 				end
 				--float or stand
 				if minetest.get_item_group(node_center.name, "water") > 0 then
-					self.object:setacceleration({x=0 - v.x,y=1 - v.y,z=0 - v.z})
+					self.object:setacceleration({x=0 - v.x,y=10 - v.y,z=0 - v.z})
 				else
 					self.object:setvelocity({x = 0, y = 0, z = 0})
 					self.object:setacceleration({x = 0, y = 0, z = 0})
