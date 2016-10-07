@@ -33,6 +33,7 @@ function register_mob_land(name, def)
 	on_punch = function(self,puncher)
 		--drop stuff on die
 		local pos = self.object:getpos()
+
 		if self.object:get_hp() <= 0 then
 			
 			pos.y = pos.y + 0.5
@@ -60,6 +61,7 @@ function register_mob_land(name, def)
 				gain = 10.0,
 			})
 		else
+
 			local below = minetest.get_node({x=pos.x, y=pos.y + def.collisionbox[2] -  0.1, z=pos.z}).name
 			local below2 = minetest.registered_items[below].walkable
 			if puncher ~= nil and below2 == true then
@@ -91,14 +93,35 @@ function register_mob_land(name, def)
 				max_hear_distance = 10,
 				gain = 10.0,
 			})
+			local hp = self.object:get_hp()
+			
+			local texture = "[combine:"..tostring(hp*16).."x"..tostring(hp*16)..":1,1=heart.png"
+			
+			for i = 1,hp do
+				texture = texture..":"..tostring(i*16)..",1=heart.png"
+			end
+			
+			minetest.add_particle({
+				pos = {x=pos.x, y=pos.y+1.5, z=pos.z},
+				velocity = {x=0, y=0, z=0},
+				acceleration = {x=0, y=1, z=0},
+				expirationtime = 1,
+				size = 10,
+				collisiondetection = false,
+				vertical = true,
+				texture = texture,
+				--playername = "singleplayer"
+			})
 		end
 
 	end,
 
 	--right click function
 	on_rightclick = function(self, clicker)
-		--do stuff, like milk cow, or shear sheep with shears
 		local pos = self.object:getpos()
+		
+		--do stuff, like milk cow, or shear sheep with shears
+		
 		if self.used == false then
 			if clicker:get_wielded_item():to_string() == def.tool then
 				minetest.add_item(pos, def.alt_drop)
@@ -152,10 +175,12 @@ function register_mob_land(name, def)
 		self.timer = self.timer + dtime
 		self.attack_timer = self.attack_timer + dtime
 		
+
 		local pos = self.object:getpos()
 		local vel = self.object:getvelocity()
 		self.object:setacceleration({x=self.vel_goal_x - vel.x,y=-10,z=self.vel_goal_z - vel.z})
 		
+	
 		--if there is a walkable node try to jump unless it's a fence
 		--if in water, swim up
 		local node_goal_x = 0
