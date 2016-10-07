@@ -31,6 +31,14 @@ minetest.register_node("farming:soil", {
 	drop = "default:dirt",
 	groups = {crumbly=3, not_in_creative_inventory=1, soil=2, grassland = 1, field = 1},
 	sounds = default.node_sound_dirt_defaults(),
+	drawtype = "nodebox",
+	paramtype = "light",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5, -0.5, -0.5, 0.5, 0.4, 0.5},
+		},
+	},
 	soil = {
 		base = "default:dirt",
 		dry = "farming:soil",
