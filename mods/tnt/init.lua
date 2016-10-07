@@ -77,9 +77,14 @@ function boom(pos, radius)
 				local pos2 = {x=pos.x+x,y=pos.y+y,z=pos.z+z}
 				local name = minetest.get_name_from_content_id(data[p_pos])
 				if x*x+y*y+z*z <= radius * radius + radius then
+					if name == "tnt:tnt" then
+						local ent = minetest.add_entity(pos,"tnt:tnt")
+						ent:get_luaentity().timer = 2.5
+						print("set velocity of other ent")
+					end
 					data[p_pos] = air
 					minetest.add_particlespawner({
-						 amount = 5,
+						 amount = 2,
 						 time = 0.1,
 						 minpos = {x=pos2.x-0.5, y=pos2.y-0.5, z=pos2.z-0.5},
 						 maxpos = {x=pos2.x+0.5, y=pos2.y+0.5, z=pos2.z+0.5},
