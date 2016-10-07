@@ -991,19 +991,20 @@ function default.register_mgv6_decorations()
 		deco_type = "simple",
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.012,
-			scale = 0.024,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 230,
-			octaves = 3,
-			persist = 0.6
-		},
-		y_min = 1,
-		y_max = 30,
+		fill_ratio = 0.5,
+		--noise_params = {
+		--	offset = -0.012,
+		--	scale = 0.024,
+		--	spread = {x = 50, y = 50, z = 50},
+		--	seed = 230,
+		--	octaves = 3,
+		--	persist = 0.6
+		--},
+		--y_min = 1,
+		--y_max = 30,
 		decoration = "default:cactus",
 		height = 3,
-	        height_max = 4,
+	    height_max = 4,
 	})
 
 	-- Long grasses
@@ -1355,17 +1356,8 @@ function default.register_decorations()
 		deco_type = "schematic",
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.0003,
-			scale = 0.0009,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 230,
-			octaves = 3,
-			persist = 0.6
-		},
+		fill_ratio = 0.001,
 		biomes = {"desert"},
-		y_min = 5,
-		y_max = 31000,
 		schematic = minetest.get_modpath("default").."/schematics/large_cactus.mts",
 		flags = "place_center_x",
 		rotation = "random",
@@ -1377,17 +1369,10 @@ function default.register_decorations()
 		deco_type = "simple",
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.0003,
-			scale = 0.0009,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 230,
-			octaves = 3,
-			persist = 0.6
-		},
+		fill_ratio = 0.001,
 		biomes = {"desert"},
-		y_min = 5,
-		y_max = 31000,
+		--y_min = 5,
+		--y_max = 31000,
 		decoration = "default:cactus",
 		height = 2,
 		height_max = 5,
