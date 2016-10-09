@@ -129,22 +129,19 @@ function beds.kick_players()
 end
 
 function beds.skip_night()
-	minetest.set_timeofday(0.23)
+	local tod = minetest.get_timeofday()
+	tod = tod + 0.6 -- sleep for 6% of day
+	if tod > 1 then
+		tod = tod - 1
+	end
+	minetest.set_timeofday(tod)
 end
 
 function beds.on_rightclick(pos, player)
 	local name = player:get_player_name()
 	local ppos = player:getpos()
 	local tod = minetest.get_timeofday()
-
-	if tod > 0.2 and tod < 0.805 then
-		if beds.player[name] then
-			lay_down(player, nil, nil, false)
-		end
-		minetest.chat_send_player(name, "You can only sleep at night.")
-		return
-	end
-
+	
 	-- move to bed
 	if not beds.player[name] then
 		lay_down(player, ppos, pos)
