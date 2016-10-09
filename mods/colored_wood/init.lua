@@ -8,7 +8,7 @@ for key,value in pairs(wood_table) do
 	local def = minetest.registered_items[value]
 	for number,colortable in pairs(colors) do
 		minetest.register_node("colored_wood:"..string.gsub(value, "default:", "").."_"..colors[number][1], {
-			description = def.description.." "..colors[number][1]:gsub("^%l", string.upper),
+			description = colors[number][1]:gsub("^%l", string.upper).." "..def.description,
 			paramtype2 = "facedir",
 			place_param2 = 0,
 			tiles = {def.tiles[1].."^[colorize:"..colortable[2]..":170"},
@@ -37,7 +37,7 @@ for key,value in pairs(wood_table) do
 	local def = minetest.registered_items[value]
 	for number,colortable in pairs(colors) do
 		default.register_fence("colored_wood:"..string.gsub(value, "default:", "").."_"..colors[number][1], {
-			description = def.description.." "..colors[number][1]:gsub("^%l", string.upper),
+			description = colors[number][1]:gsub("^%l", string.upper).." "..def.description,
 			texture = def.tiles[1].."^[colorize:"..colortable[2]..":170",
 			inventory_image = def.inventory_image.."^[colorize:"..colortable[2]..":170",
 			wield_image = def.wield_image.."^[colorize:"..colortable[2]..":170",
