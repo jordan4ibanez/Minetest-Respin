@@ -30,6 +30,12 @@ minetest.register_craftitem("mob:meat_raw", {
 	inventory_image = "mobs_meat_raw.png",
 	on_use = minetest.item_eat(2),
 })
+
+minetest.register_craftitem("mob:meat_rotten", {
+	description = "Rotten Meat",
+	inventory_image = "mobs_meat_rotten.png",
+	on_use = minetest.item_eat(-2),
+})
 minetest.register_craft({
 	type = "cooking",
 	output = "mob:meat",
@@ -47,7 +53,12 @@ minetest.register_craft({
 	recipe = "mob:meat_raw",
 	cooktime = 5,
 })
-
+minetest.register_craft({
+	type = "cooking",
+	output = "mob:meat",
+	recipe = "mob:meat_rotten",
+	cooktime = 5,
+})
 
 
 register_mob_land("sheep", {
@@ -108,7 +119,40 @@ attack_damage = 2,
 attack_sound = "zombie_hit",
 hurt_sound   = "zombie_death",
 
-drop         = "default:glass",
+drop         = "mob:meat_rotten",
+
+})
+
+register_mob_land("fast_zombie", {
+--self params
+collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
+visual       = "mesh",
+mesh         = "zombie.b3d",
+textures     = {"fast_zombie.png"},
+dir          = -90,
+size         = 1,
+
+--animation params
+normal_speed = 15,
+stand_start  = 0,
+stand_end    = 80,
+walk_start   = 102,
+walk_end     = 121,
+
+--world/behavior params
+hostile      = true,
+spawn_on     = "default:dirt_with_grass",
+fill_ratio   = 0.001, --amount of mobs to spawn 
+max_speed    = 8,
+chase_rad    = 15,
+attack_rad   = 1,
+health       = 20,
+attack_cooldown = 1,
+attack_damage = 2,
+attack_sound = "zombie_hit",
+hurt_sound   = "zombie_death",
+
+drop         = "mob:meat_rotten",
 
 })
 register_mob_land("robot", {
