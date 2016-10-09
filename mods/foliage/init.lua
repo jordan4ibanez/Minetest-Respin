@@ -86,7 +86,7 @@ minetest.register_node("foliage:bnooper", {
 	buildable_to = true,
 	groups = {snappy = 3, flora = 1, attached_node = 1, grass = 1, dig_immediate = 3},
 	sounds = default.node_sound_leaves_defaults(),
-	drop = "",
+	drop = "dye:green",
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.4, -0.5, -0.4, 0.4, 0.4, 0.4},
@@ -105,7 +105,7 @@ minetest.register_node("foliage:groff", {
 	buildable_to = true,
 	groups = {snappy = 3, flora = 1, attached_node = 1, grass = 1, dig_immediate = 3},
 	sounds = default.node_sound_leaves_defaults(),
-	drop = "",
+	drop = "dye:green",
 	selection_box = {
 		type = "fixed",
 		fixed = {-0.15, -0.5, -0.15, 0.15, 0.5, 0.15},
