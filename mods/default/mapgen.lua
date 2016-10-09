@@ -964,26 +964,6 @@ function default.register_mgv6_decorations()
 
 	-- Papyrus
 
-	minetest.register_decoration({
-		deco_type = "simple",
-		place_on = {"default:dirt_with_grass"},
-		sidelen = 16,
-		noise_params = {
-			offset = -0.3,
-			scale = 0.7,
-			spread = {x = 100, y = 100, z = 100},
-			seed = 354,
-			octaves = 3,
-			persist = 0.7
-		},
-		y_min = 1,
-		y_max = 1,
-		decoration = "default:papyrus",
-		height = 2,
-		height_max = 4,
-		spawn_by = "default:water_source",
-		num_spawn_by = 1,
-	})
 
 	-- Cacti
 
@@ -1381,21 +1361,15 @@ function default.register_decorations()
 	-- Papyrus
 
 	minetest.register_decoration({
-		deco_type = "schematic",
-		place_on = {"default:dirt"},
+		deco_type = "simple",
+		place_on = {"default:dirt_with_grass","default:sand"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.3,
-			scale = 0.7,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 354,
-			octaves = 3,
-			persist = 0.7
-		},
-		biomes = {"savanna_swamp"},
-		y_min = 0,
-		y_max = 0,
-		schematic = minetest.get_modpath("default").."/schematics/papyrus.mts",
+		fill_ratio = 0.09,
+		spawn_by = "default:water_source",
+		num_spawn_by = 1,
+		decoration = "default:papyrus",
+		height = 3,
+		height_max = 7,
 	})
 
 	-- Grasses
