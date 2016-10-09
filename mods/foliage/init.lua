@@ -122,7 +122,6 @@ minetest.register_abm{
 			--if player touches cactus then hurt
 			if ent:is_player() then
 				local diff = {x=pos.x-pos2.x,y=pos.y-pos2.y,z=pos.z-pos2.z}
-				print(diff.y)
 				if diff.y >= -0.5 and diff.y <= 2 then
 					if math.abs(diff.x) < 0.85 and math.abs(diff.z) < 0.85 then
 						ent:set_hp(ent:get_hp()-1)
