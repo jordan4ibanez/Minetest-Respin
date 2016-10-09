@@ -28,3 +28,33 @@ for number,colortable in pairs(colors) do
 		recipe = {"stained_glass:glass_"..colors[number][1]},
 	})
 end
+
+--stained glasspane - use xpanes api
+for number,colortable in pairs(colors) do
+
+	xpanes.register_pane("pane_"..colors[number][1], {
+		description = colors[number][1]:gsub("^%l", string.upper).." Glass Pane",
+		textures = {"default_glass.png".."^[colorize:"..colortable[2]..":170","xpanes_pane_half.png".."^[colorize:"..colortable[2]..":170","xpanes_white.png".."^[colorize:"..colortable[2]..":170"},
+		inventory_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
+		wield_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
+		sounds = default.node_sound_glass_defaults(),
+		groups = {snappy=2, cracky=3, oddly_breakable_by_hand=3},
+		recipe = {
+			{"default:glass", "default:glass", "default:glass"},
+			{"default:glass", "default:glass", "default:glass"}
+		}
+	})
+
+	--stain glasspane
+	minetest.register_craft( {
+		type = "shapeless",
+		output = "xpanes:pane_"..colors[number][1].."_flat",
+		recipe = {"xpanes:pane_flat",  "dye:"..colortable[1]},
+	})
+	--return glasspane to normal
+	minetest.register_craft( {
+		type = "shapeless",
+		output = "xpanes:pane_flat",
+		recipe = {"xpanes:pane_"..colors[number][1].."_flat"},
+	})
+end
