@@ -1,3 +1,5 @@
+--have ore generation, looks and acts like stone, but when mined generates a mob (maybe angry block mob?)
+
 --The AI for the land mobs
 function register_mob_land(name, def)
 	minetest.register_entity("mob:"..name, {
