@@ -24,3 +24,32 @@ minetest.register_on_respawnplayer(function(player)
 		player_hurt_table[player:get_player_name()] = nil
 	end
 end)
+
+--throw items everywhere
+minetest.register_on_dieplayer(function(player)
+	local pos = player:getpos()
+	local inv = player:get_inventory()
+	local main_count = inv:get_size("main")
+	local craft_count = inv:get_size("craft")
+
+	if pos == nil or inv == nil or main_count == nil or craft_count == nil then
+		return
+	end
+	
+	for i = 1,main_count do
+		local stack = inv:get_stack("main", i)
+		inv:set_stack("main", i, "")
+		local item = minetest.add_item(pos, stack)
+		if item ~= nil then
+			item:setvelocity({x=math.random(-5,5),y=math.random(3,7),z=math.random(-5,5)})
+		end
+	end
+	for i = 1,craft_count do
+		local stack = inv:get_stack("craft", i)
+		inv:set_stack("craft", i, "")
+		local item = minetest.add_item(pos, stack)
+		if item ~= nil then
+			item:setvelocity({x=math.random(-5,5),y=math.random(3,7),z=math.random(-5,5)})
+		end
+	end
+end)
