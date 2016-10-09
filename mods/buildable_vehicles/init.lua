@@ -17,9 +17,9 @@ settings.node_table = settings.set{"default:wood","default:tree","default:glass"
 
 minetest.register_entity("buildable_vehicles:ship_element", {
 	initial_properties = {
-		physical = true,
+		physical = false,
 		collide_with_objects = true,
-		collisionbox = {-0.5,-0.5,-0.5, 0.5,0.5,0.5},  -- THIS NEEDS TO BE MODIFIED ON CREATION
+		collisionbox = {-0.5,-0.5,-0.5, 0.5,0.5,0.5}, 
 		visual = "wielditem",
 		textures = {},
 		automatic_face_movement_dir = 0.0,
@@ -73,27 +73,26 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 			if self.controller then
 				if minetest.get_player_by_name(self.controller):get_attach() ~= nil then
 					local control = minetest.get_player_by_name(self.controller):get_player_control()
+					self.object:setacceleration({x=0 - velocity.x,y=-10,z=0 - velocity.z})
 					if control.jump == true or control.sneak == true or control.up == true then
 						local vel = {}
-						if control.jump == true then
-							vel.y = 3
-						elseif control.sneak == true then
-							vel.y = -3
-						else
-							vel.y = 0
-						end
+						--vel.y = 0
+						--if control.jump == true then
+						--	vel.y = 3
+						--end
+						--if control.sneak == true then
+						vel.y = -10
+						--end
 						if control.up == true then
 							local dir = minetest.get_player_by_name(self.controller):get_look_dir()
-							vel.x = dir.x * 2
-							vel.z = dir.z * 2
+							vel.x = dir.x * 8
+							vel.z = dir.z * 8
 						else
 							vel.x = 0
 							vel.z = 0
 						end
-						self.object:setacceleration({x=vel.x - velocity.x,y=0,z=vel.z - velocity.z})
+						self.object:setacceleration({x=vel.x - velocity.x,y=vel.y,z=vel.z - velocity.z})
 					end
-				else
-					self.object:setacceleration({x=0,y=0,z=0})
 				end
 			end
 			
@@ -117,7 +116,7 @@ end
 function create_vessel(pos,param2)
 
 	local parent = spawn_element(pos, {name="buildable_vehicles:control_node"})
-	parent:get_luaentity().object:set_properties({automatic_face_movement_dir = (90 * param2)-90})
+	parent:get_luaentity().object:set_properties({stepheight = 2, automatic_face_movement_dir = (90 * param2)-90, physical = true})
 	local basepos = pos
 
 	local range = settings.ship_size
@@ -133,6 +132,11 @@ function create_vessel(pos,param2)
 	
 	local air = minetest.get_content_id("air")
 
+	--vehicle collision box
+	local collision_box_width_x = 0--to use width instead of length
+	local collision_box_width_z = 0
+	local collision_box_top     = 0
+	local collision_box_bottom  = 0
 	--build the vessel
 	for x = range*-1,range do
 		for y = range*-1,range do
@@ -155,7 +159,21 @@ function create_vessel(pos,param2)
 					child:get_luaentity().face_direction = face_direction * 90
 					--delete the nodes added to the vessel
 					local p_pos = area:index(pos.x, pos.y, pos.z)
-					data[p_pos] = air	
+					data[p_pos] = air
+					--set up the collision box
+					if y < collision_box_bottom then
+						collision_box_bottom = y
+					end
+					if y > collision_box_top then
+						collision_box_top = y
+					end
+					if x > collision_box_width_x then
+						collision_box_width_x = x
+					end
+					if z > collision_box_width_z then
+						collision_box_width_z = z
+					end
+						
 				end
 			end
 		end
@@ -164,6 +182,20 @@ function create_vessel(pos,param2)
 	vm:calc_lighting()
 	vm:write_to_map()
 	vm:update_map()
+	
+	--use width instead of length so vehicles navigate nodes better
+	local collision_box_width = 0
+	if collision_box_width_x < collision_box_width_z then
+		collision_box_width = collision_box_width_x
+	elseif collision_box_width_z <= collision_box_width_x then
+		collision_box_width = collision_box_width_z
+	end
+	
+	
+	collision_box_bottom = collision_box_bottom - 0.5
+	collision_box_top    = collision_box_top + 0.5	
+	collision_box_width  = collision_box_width + 0.25 -- allow to fit through their own width
+	parent:get_luaentity().object:set_properties({collisionbox = {-collision_box_width,collision_box_bottom,-collision_box_width, collision_box_width,collision_box_top,collision_box_width}})
 	
 	return(parent)
 end
