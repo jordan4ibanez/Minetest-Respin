@@ -122,16 +122,10 @@ minetest.register_abm{
 			--if player touches cactus then hurt
 			if ent:is_player() then
 				local diff = {x=pos.x-pos2.x,y=pos.y-pos2.y,z=pos.z-pos2.z}
-				if math.abs(diff.y) >= -0.5 and math.abs(diff.y) <= 2 then
-					if math.abs(diff.x) > math.abs(diff.z) then
-						--check if less than 0.85
-						if math.abs(diff.x) < 0.85 then
-							ent:set_hp(ent:get_hp()-1)
-						end
-					elseif math.abs(diff.x) < math.abs(diff.z) then
-						if math.abs(diff.z) < 0.85 then
-							ent:set_hp(ent:get_hp()-1)
-						end
+				print(diff.y)
+				if diff.y >= -0.5 and diff.y <= 2 then
+					if math.abs(diff.x) < 0.85 and math.abs(diff.z) < 0.85 then
+						ent:set_hp(ent:get_hp()-1)
 					end
 				end
 			end
@@ -139,15 +133,8 @@ minetest.register_abm{
 			if not ent:is_player() and ent:get_luaentity().itemstring then
 				local diff = {x=pos.x-pos2.x,y=pos.y-pos2.y,z=pos.z-pos2.z}
 				if math.abs(diff.y) <= 0.75 then
-					if math.abs(diff.x) > math.abs(diff.z) then
-						--check if less than 0.85
-						if math.abs(diff.x) < 0.85 then
-							ent:remove()
-						end
-					elseif math.abs(diff.x) < math.abs(diff.z) then
-						if math.abs(diff.z) < 0.85 then
-							ent:remove()
-						end
+					if math.abs(diff.x) < 0.85 and math.abs(diff.z) < 0.85 then
+						ent:remove()
 					end
 				end
 			end

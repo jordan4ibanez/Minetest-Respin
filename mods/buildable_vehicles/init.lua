@@ -164,12 +164,8 @@ function create_vessel(pos,param2)
 					end
 					--delete the nodes added to the vessel
 					local p_pos = area:index(pos.x, pos.y, pos.z)
-					data[p_pos] = air
-					
+					data[p_pos] = air	
 				end
-								
-				
-				
 			end
 		end
 	end
