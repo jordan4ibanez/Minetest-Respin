@@ -26,7 +26,11 @@ minetest.register_craftitem("farming:bread", {
 	inventory_image = "farming_bread.png",
 	on_use = minetest.item_eat(5),
 })
-
+minetest.register_craftitem("farming:sugar", {
+	description = "Sugar",
+	inventory_image = "farming_sugar.png",
+	on_use = minetest.item_eat(1),
+})
 minetest.register_craft({
 	type = "shapeless",
 	output = "farming:flour",
@@ -75,4 +79,9 @@ minetest.register_craft({
 	recipe = {
 		{"farming:straw"},
 	}
+})
+minetest.register_craft({
+	type = "shapeless",
+	output = "farming:sugar",
+	recipe = {"default:papyrus"}
 })
