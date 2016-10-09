@@ -47,7 +47,7 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 		end
 		minetest.after(0,function()
 			if self.parent ~= nil and self.relative ~= nil then 
-				self.object:set_attach(self.parent, "", {x=self.relative.x,y=self.relative.y,z=self.relative.z}, {x=0,y=0,z=0})
+				self.object:set_attach(self.parent, "", {x=self.relative.x,y=self.relative.y,z=self.relative.z}, {x=0,y=self.face_direction,z=0})
 				self.object:set_properties({visual_size = {x=settings.scaling*3, y=settings.scaling*3}})
 				--self.object:set_properties({})
 			else
@@ -117,7 +117,8 @@ end
 function create_vessel(pos,param2)
 
 	local parent = spawn_element(pos, {name="buildable_vehicles:control_node"})
-	local basepos = parent:getpos()
+	parent:get_luaentity().object:set_properties({automatic_face_movement_dir = (90 * param2)-90})
+	local basepos = pos
 
 	local range = settings.ship_size
 	
@@ -139,29 +140,19 @@ function create_vessel(pos,param2)
 				local pos = {x=basepos.x+x,y=basepos.y+y,z=basepos.z+z}
 				--entities for the vessel
 				local node = vm:get_node_at(pos).name
-				local param2 = vm:get_node_at(pos).param2
+				
+				---the facedir of the node for node entity
+				local face_direction = vm:get_node_at(pos).param2
+				--print(face_direction)
+				
+				
 				--print(dump(vm:get_node_at(pos)))
 				if settings.node_table[node] then
 					local child = spawn_element(pos, {name=node})
 					child:get_luaentity().parent = parent
 					
-					if param2 then
-						child:get_luaentity().param2 = param2
-					end
-					
-					if param2 == 0 then
-						print("00000")
-						child:get_luaentity().relative = {x=x * settings.attach_scaling,y=y * settings.attach_scaling,z=z * settings.attach_scaling}
-					elseif param2 == 1 then
-						print("111111")
-						child:get_luaentity().relative = {x=x * settings.attach_scaling,y=y * settings.attach_scaling,z=z * settings.attach_scaling}
-					elseif param2 == 2 then
-						print("22222")
-						child:get_luaentity().relative = {x=z * settings.attach_scaling*-1,y=y * settings.attach_scaling,z=x * settings.attach_scaling}
-					elseif param2 == 3 then
-						print("33333")
-						child:get_luaentity().relative = {x=x * settings.attach_scaling*-1,y=y * settings.attach_scaling,z=z * settings.attach_scaling}
-					end
+					child:get_luaentity().relative = {x=x * settings.attach_scaling,y=y * settings.attach_scaling,z=z * settings.attach_scaling}
+					child:get_luaentity().face_direction = face_direction * 90
 					--delete the nodes added to the vessel
 					local p_pos = area:index(pos.x, pos.y, pos.z)
 					data[p_pos] = air	
@@ -188,7 +179,6 @@ minetest.register_node("buildable_vehicles:control_node", {
 	groups = {cracky=3, stone=1},
 	paramtype2 = "facedir",
 	on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-		print(node.param2)
 		local vessel = create_vessel(pos,node.param2)
 		player:set_attach(vessel, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
 		vessel:get_luaentity().controller = player:get_player_name()

@@ -54,3 +54,11 @@ minetest.register_on_dieplayer(function(player)
 		end
 	end
 end)
+
+--figure out some way to enable the minimap
+minetest.register_on_joinplayer(function(player)
+	minetest.after(1, function()
+		minetest.setting_set("enable_minimap", "true")
+	end)
+end)
+
