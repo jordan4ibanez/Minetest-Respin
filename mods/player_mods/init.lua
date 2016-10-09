@@ -27,6 +27,7 @@ end)
 
 --throw items everywhere
 minetest.register_on_dieplayer(function(player)
+	print("\n\n\n\n\nMAKE PLAYER SMALLER TO SIMULATE LAYING DOWN LIKE IN BED")
 	local pos = player:getpos()
 	local inv = player:get_inventory()
 	local main_count = inv:get_size("main")

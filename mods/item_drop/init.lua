@@ -162,6 +162,7 @@ end
 function minetest.item_drop(itemstack, dropper, pos)
 	if dropper and dropper:is_player() then
 		local v = dropper:get_look_dir()
+		local s = dropper:get_player_velocity()
 		local p = {x=pos.x, y=pos.y+1.2, z=pos.z}
 		local cs = 1
 		if dropper:get_player_control().sneak then
@@ -170,9 +171,9 @@ function minetest.item_drop(itemstack, dropper, pos)
 		local item = itemstack:take_item(cs)
 		local obj = core.add_item(p, item)
 		if obj then
-			v.x = v.x*4
-			v.y = v.y*4 + 2
-			v.z = v.z*4
+			v.x = (v.x*4) + s.x
+			v.y = (v.y*4 + 3) + s.y
+			v.z = (v.z*4) + s.z
 			obj:setvelocity(v)
 			obj:get_luaentity().collect = true
 			return itemstack
