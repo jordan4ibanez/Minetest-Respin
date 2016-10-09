@@ -1,12 +1,26 @@
-
-local colors = {{"white","#FFFFFF"},{"grey","#808080"},{"dark_grey","#404040"},{"black","#000000"},{"cyan","#00FFFF"},{"green","#008000"},{"dark_green","#004000"},
-{"yellow","#FFFF00"},{"orange","#FFA500"},{"brown","#614126"},{"pink","#FFC0CB"},{"magenta","#FF00FF"},{"violet","#EE82EE"},{"blue", "#0000ff"},{"red","#FF0000"},}
+local colors = {
+{"white",     "#FFFFFF", "White"},
+{"grey",      "#808080", "Grey"},
+{"dark_grey", "#404040", "Dark Grey"},
+{"black",     "#000000", "Black"},
+{"cyan",      "#00FFFF", "Cyan"},
+{"green",     "#008000", "Green"},
+{"dark_green","#004000", "Dark Green"},
+{"yellow",    "#FFFF00", "Yellow"},
+{"orange",    "#FFA500", "Orange"},
+{"brown",     "#614126", "Brown"},
+{"pink",      "#FFC0CB", "Pink"},
+{"magenta",   "#FF00FF", "Magenta"},
+{"violet",    "#EE82EE", "Violet"},
+{"blue",      "#0000ff", "Blue"},
+{"red",       "#FF0000", "Red"}
+}
 
 --stained glass
 for number,colortable in pairs(colors) do
 	local def = minetest.registered_items["default:glass"]
 	minetest.register_node("stained_glass:glass_"..colors[number][1], {
-		description = colors[number][1]:gsub("^%l", string.upper).." "..def.description,
+		description = colors[number][3].." "..def.description,
 		drawtype = "glasslike_framed_optional",
 		tiles = {def.tiles[1].."^[colorize:"..colortable[2]..":170",def.tiles[2].."^[colorize:"..colortable[2]..":170"},
 		paramtype = "light",
@@ -33,7 +47,7 @@ end
 for number,colortable in pairs(colors) do
 
 	xpanes.register_pane("pane_"..colors[number][1], {
-		description = colors[number][1]:gsub("^%l", string.upper).." Glass Pane",
+		description = colors[number][3].." Glass Pane",
 		textures = {"default_glass.png".."^[colorize:"..colortable[2]..":170","xpanes_pane_half.png".."^[colorize:"..colortable[2]..":170","xpanes_white.png".."^[colorize:"..colortable[2]..":170"},
 		inventory_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
 		wield_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
