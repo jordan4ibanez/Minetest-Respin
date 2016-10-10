@@ -1,5 +1,5 @@
 print("create a rope thing so you can drag the boat entities around, and attach one entity to another\n\n\n\n")
-
+print("create oil distilery with temperature, gui shows temp with bar that shows if you'll be making engine oil, diesel, or gasoline (in that order), have it be controlled with fuel and water or coolant")
 
 
 
@@ -92,8 +92,8 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 						vel.y = -10
 						if control.up == true then
 							local yaw = minetest.get_player_by_name(self.controller):get_look_yaw()
-							vel.x = math.cos(yaw) * 5
-							vel.z = math.sin(yaw) * 5
+							vel.x = math.cos(yaw) * 20
+							vel.z = math.sin(yaw) * 20
 						else
 							vel.x = 0
 							vel.z = 0
@@ -378,7 +378,7 @@ minetest.register_node("buildable_vehicles:gasoline_source", {
 minetest.register_node("buildable_vehicles:gasoline_flowing", {
 	description = "Flowing Gasoline",
 	drawtype = "flowingliquid",
-	tiles = {"default_water.png^[colorize:#000000:200"},
+	tiles = {"default_water.png^[colorize:#ffff99:200"},
 	special_tiles = {
 		{
 			name = "default_water_flowing_animated.png^[colorize:#ffff99:200",
@@ -420,7 +420,97 @@ minetest.register_node("buildable_vehicles:gasoline_flowing", {
 	groups = {oil = 1, liquid = 3, flammable = 1,not_in_creative_inventory = 1},
 })
 
+--diesel
+minetest.register_node("buildable_vehicles:diesel_source", {
+	description = "Diesel Source",
+	drawtype = "liquid",
+	tiles = {
+		{
+			name = "default_water_source_animated.png^[colorize:#ffbf00:200",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 2.0,
+			},
+		},
+	},
+	special_tiles = {
+		-- New-style water source material (mostly unused)
+		{
+			name = "default_water_source_animated.png^[colorize:#ffbf00:200",
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 2.0,
+			},
+			backface_culling = false,
+		},
+	},
+	alpha = 200,
+	paramtype = "light",
+	walkable = false,
+	pointable = false,
+	diggable = false,
+	buildable_to = true,
+	is_ground_content = false,
+	liquid_renewable = false,
+	drop = "",
+	drowning = 1,
+	liquidtype = "source",
+	damage_per_second = 1,
+	liquid_alternative_flowing = "buildable_vehicles:diesel_flowing",
+	liquid_alternative_source = "buildable_vehicles:diesel_source",
+	liquid_viscosity = 1,
+	post_effect_color = {a = 200, r = 100, g = 75, b = 0},
+	groups = { liquid = 3},
+})
 
+minetest.register_node("buildable_vehicles:diesel_flowing", {
+	description = "Flowing Coolant",
+	drawtype = "flowingliquid",
+	tiles = {"default_water.png^[colorize:#ffbf00:200"},
+	special_tiles = {
+		{
+			name = "default_water_flowing_animated.png^[colorize:#ffbf00:200",
+			backface_culling = false,
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 0.8,
+			},
+		},
+		{
+			name = "default_water_flowing_animated.png^[colorize:#ffbf00:200",
+			backface_culling = true,
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 0.8,
+			},
+		},
+	},
+	alpha = 200,
+	paramtype = "light",
+	paramtype2 = "flowingliquid",
+	walkable = false,
+	pointable = false,
+	diggable = false,
+	buildable_to = true,
+	is_ground_content = false,
+	drop = "",
+	drowning = 1,
+	liquidtype = "flowing",
+	damage_per_second = 1,
+	liquid_alternative_flowing = "buildable_vehicles:diesel_flowing",
+	liquid_alternative_source = "buildable_vehicles:diesel_source",
+	liquid_viscosity = 1,
+	post_effect_color = {a = 200, r = 100, g = 75, b = 0},
+	groups = {liquid = 3, not_in_creative_inventory = 1, },
+})
 
 --coolant
 minetest.register_node("buildable_vehicles:coolant_source", {
@@ -472,7 +562,7 @@ minetest.register_node("buildable_vehicles:coolant_source", {
 minetest.register_node("buildable_vehicles:coolant_flowing", {
 	description = "Flowing Coolant",
 	drawtype = "flowingliquid",
-	tiles = {"default_water.png^[colorize:#000000:200"},
+	tiles = {"default_water.png^[colorize:#7fff00:200"},
 	special_tiles = {
 		{
 			name = "default_water_flowing_animated.png^[colorize:#7fff00:200",
@@ -514,6 +604,9 @@ minetest.register_node("buildable_vehicles:coolant_flowing", {
 	groups = {water = 3, liquid = 3, flammable = 1,not_in_creative_inventory = 1, puts_out_fire = 1},
 })
 
+
+--make diesel an abm that freezes
+
 --buckets
 bucket.register_liquid(
 	"buildable_vehicles:oil_source",
@@ -530,6 +623,14 @@ bucket.register_liquid(
 	"bucket_gasoline.png",
 	"Bucket of Gasoline",
 	{gasoline_bucket = 1}
+)
+bucket.register_liquid(
+	"buildable_vehicles:diesel_source",
+	"buildable_vehicles:diesel_flowing",
+	"buildable_vehicles:bucket_diesel",
+	"bucket_diesel.png",
+	"Bucket of Diesel",
+	{diesel_bucket = 1}
 )
 bucket.register_liquid(
 	"buildable_vehicles:coolant_source",
