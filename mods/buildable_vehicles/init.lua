@@ -1,7 +1,9 @@
-print("create a rope thing so you can drag the boat entities around, and attach one entity to another\n\n\n\n")
-print("create oil distilery with temperature, gui shows temp with bar that shows if you'll be making engine oil, diesel, or gasoline (in that order), have it be controlled with fuel and water or coolant")
-
-
+print("--------------- buildable_vehicles notes ---------------------")
+print("\ncreate a rope thing so you can drag the boat entities around, and attach one entity to another")
+print("\ncreate oil distilery with temperature, gui shows temp with bar that shows if you'll be making engine oil, diesel, or gasoline (in that order), have it be controlled with fuel and water or coolant")
+print("\ndo waste oil for oil changes that can be turned into diesel")
+print("\nbio diesel?")
+print("--------------------------------------------------")
 
 local settings = {}
 settings.attach_scaling = 30
@@ -604,9 +606,28 @@ minetest.register_node("buildable_vehicles:coolant_flowing", {
 	groups = {water = 3, liquid = 3, flammable = 1,not_in_creative_inventory = 1, puts_out_fire = 1},
 })
 
-
 --make diesel an abm that freezes
-
+minetest.register_node("buildable_vehicles:diesel_frozen", {
+	description = "Frozen Diesel",
+	tiles = {"default_ice.png^[colorize:#ffbf00:200"},
+	is_ground_content = false,
+	paramtype = "light",
+	groups = {cracky = 3},
+	sounds = default.node_sound_glass_defaults(),
+	on_dig = function(pos, node, player)
+		minetest.set_node(pos, {name="buildable_vehicles:diesel_source"})
+	end,
+})
+minetest.register_abm({
+	label = "Grass covered",
+	nodenames = {"buildable_vehicles:diesel_source"},
+	interval = 1,--8,
+	chance = 1,--50,
+	neighbors = {"default:ice","default:dirt_with_snow","default:snow"},
+	action = function(pos, node)
+		minetest.set_node(pos, {name="buildable_vehicles:diesel_frozen"})
+	end
+})
 --buckets
 bucket.register_liquid(
 	"buildable_vehicles:oil_source",
@@ -652,6 +673,13 @@ minetest.register_craft({
 	cooktime = 60,
 	output = "buildable_vehicles:bucket_gasoline",
 	recipe = "buildable_vehicles:bucket_oil"
+})
+--craft diesel - this is a craft for now
+--dye oil orange
+minetest.register_craft({
+	type = "shapeless",
+	output = "buildable_vehicles:bucket_diesel",
+	recipe = {"buildable_vehicles:bucket_oil", "dye:orange"},
 })
 
 --spawn oil in the ground
