@@ -74,6 +74,7 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 			--self.object:setvelocity({x=math.random(-1,1)*math.random(),y=0,z=math.random(-1,1)*math.random()})
 			--let player control vessel
 			if self.controller then
+				--boat test
 				local pos = self.object:getpos()
 				pos.y = pos.y - 1
 				local node = minetest.get_node(pos).name
@@ -86,13 +87,13 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 					y_goal = -10
 				end
 				local vel = {x=0,y=0,z=0}
-				if minetest.get_player_by_name(self.controller):get_attach() ~= nil then
+				if minetest.get_player_by_name(self.controller):get_attach() ~= nil and in_water > 0 then
 					if control.jump == true or control.sneak == true or control.up == true then
 						vel.y = -10
 						if control.up == true then
-							local dir = minetest.get_player_by_name(self.controller):get_look_dir()
-							vel.x = dir.x * 8
-							vel.z = dir.z * 8
+							local yaw = minetest.get_player_by_name(self.controller):get_look_yaw()
+							vel.x = math.cos(yaw) * 5
+							vel.z = math.sin(yaw) * 5
 						else
 							vel.x = 0
 							vel.z = 0
