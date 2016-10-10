@@ -16,7 +16,7 @@ function settings.set(list)
   return set
 end
 
-settings.node_table = settings.set{"default:wood","default:tree","default:glass","stairs:stair_wood"}
+settings.node_table = settings.set{"default:wood","default:glass","stairs:stair_wood"}
 
 minetest.register_entity("buildable_vehicles:ship_element", {
 	initial_properties = {
@@ -187,6 +187,7 @@ function create_vessel(pos,param2)
 			end
 		end
 	end
+	vm:update_liquids()
 	vm:set_data(data)
 	vm:calc_lighting()
 	vm:write_to_map()
