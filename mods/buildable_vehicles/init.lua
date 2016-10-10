@@ -75,6 +75,7 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 			--let player control vessel
 			if self.controller then
 				local pos = self.object:getpos()
+				pos.y = pos.y - 1
 				local node = minetest.get_node(pos).name
 				local in_water = minetest.get_item_group(node, "water")
 				local control = minetest.get_player_by_name(self.controller):get_player_control()
