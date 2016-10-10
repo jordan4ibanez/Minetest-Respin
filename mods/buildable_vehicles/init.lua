@@ -74,18 +74,20 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 			--self.object:setvelocity({x=math.random(-1,1)*math.random(),y=0,z=math.random(-1,1)*math.random()})
 			--let player control vessel
 			if self.controller then
+				local pos = self.object:getpos()
+				local node = minetest.get_node(pos).name
+				local in_water = minetest.get_item_group(node, "water")
+				local control = minetest.get_player_by_name(self.controller):get_player_control()
+				local y_goal = 0
+				if in_water > 0 then
+					y_goal = 10 - velocity.y
+				else
+					y_goal = -10
+				end
+				local vel = {x=0,y=0,z=0}
 				if minetest.get_player_by_name(self.controller):get_attach() ~= nil then
-					local control = minetest.get_player_by_name(self.controller):get_player_control()
-					self.object:setacceleration({x=0 - velocity.x,y=-10,z=0 - velocity.z})
 					if control.jump == true or control.sneak == true or control.up == true then
-						local vel = {}
-						--vel.y = 0
-						--if control.jump == true then
-						--	vel.y = 3
-						--end
-						--if control.sneak == true then
 						vel.y = -10
-						--end
 						if control.up == true then
 							local dir = minetest.get_player_by_name(self.controller):get_look_dir()
 							vel.x = dir.x * 8
@@ -94,9 +96,9 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 							vel.x = 0
 							vel.z = 0
 						end
-						self.object:setacceleration({x=vel.x - velocity.x,y=vel.y,z=vel.z - velocity.z})
 					end
 				end
+				self.object:setacceleration({x=vel.x - velocity.x,y=y_goal,z=vel.z - velocity.z})
 			end
 			
 		end
@@ -104,6 +106,10 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 	on_rightclick = function(self, clicker)
 		if clicker:get_player_name() == self.controller then
 			clicker:set_detach()
+			--self.controller = nil
+		--elseif self.controller == nil then
+		--	clicker:set_attach()
+		--	self.controller = clicker:get_player_name()
 		end
 	end,
 	--
@@ -119,7 +125,7 @@ end
 function create_vessel(pos,param2)
 
 	local parent = spawn_element(pos, {name="buildable_vehicles:control_node"})
-	parent:get_luaentity().object:set_properties({stepheight = 2, automatic_face_movement_dir = (90 * param2)-90, physical = true})
+	parent:get_luaentity().object:set_properties({stepheight = 2, automatic_face_movement_dir = (90 * param2)-90, physical = true})--, parent = true})
 	local basepos = pos
 
 	local range = settings.ship_size
@@ -194,7 +200,7 @@ function create_vessel(pos,param2)
 		collision_box_width = collision_box_width_z
 	end
 	
-	
+	print(collision_box_width)
 	collision_box_bottom = collision_box_bottom - 0.5
 	collision_box_top    = collision_box_top + 0.5	
 	collision_box_width  = collision_box_width + 0.25 -- allow to fit through their own width
