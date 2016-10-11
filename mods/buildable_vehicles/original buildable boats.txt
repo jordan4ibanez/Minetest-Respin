@@ -1,10 +1,3 @@
-print("--------------- buildable_vehicles notes ---------------------")
-print("\ncreate a rope thing so you can drag the boat entities around, and attach one entity to another")
-print("\ncreate oil distilery with temperature, gui shows temp with bar that shows if you'll be making engine oil, diesel, or gasoline (in that order), have it be controlled with fuel and water or coolant")
-print("\ndo waste oil for oil changes that can be turned into diesel")
-print("\nbio diesel?")
-print("--------------------------------------------------")
-
 local settings = {}
 settings.attach_scaling = 30
 settings.scaling = 0.667
@@ -209,6 +202,7 @@ function create_vessel(pos,param2)
 		collision_box_width = collision_box_width_z
 	end
 	
+	print(collision_box_width)
 	collision_box_bottom = collision_box_bottom - 0.5
 	collision_box_top    = collision_box_top + 0.5	
 	collision_box_width  = collision_box_width + 0.25 -- allow to fit through their own width
