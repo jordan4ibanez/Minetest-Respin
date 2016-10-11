@@ -81,23 +81,16 @@ end
 -- All other biome API mapgens
 --
 
+
+--make flowers spawn more
+
+
 local function register_flower(seed, name)
 	minetest.register_decoration({
 		deco_type = "simple",
 		place_on = {"default:dirt_with_grass"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.015,
-			scale = 0.025,
-			spread = {x = 200, y = 200, z = 200},
-			seed = seed,
-			octaves = 3,
-			persist = 0.6
-		},
-		biomes = {"stone_grassland", "sandstone_grassland",
-			"deciduous_forest", "coniferous_forest"},
-		y_min = 1,
-		y_max = 31000,
+		fill_ratio = 0.01, 
 		decoration = "flowers:"..name,
 	})
 end
@@ -107,17 +100,7 @@ local function register_mushroom(name)
 		deco_type = "simple",
 		place_on = {"default:dirt_with_grass"},
 		sidelen = 16,
-		noise_params = {
-			offset = 0,
-			scale = 0.006,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 2,
-			octaves = 3,
-			persist = 0.66
-		},
-		biomes = {"deciduous_forest", "coniferous_forest"},
-		y_min = 1,
-		y_max = 31000,
+		fill_ratio = 0.01, 
 		decoration = "flowers:"..name,
 	})
 end
@@ -125,19 +108,9 @@ end
 local function register_waterlily()
 	minetest.register_decoration({
 		deco_type = "schematic",
-		place_on = {"default:dirt"},
+		place_on = {"default:dirt", "default:sand"},
 		sidelen = 16,
-		noise_params = {
-			offset = -0.12,
-			scale = 0.3,
-			spread = {x = 200, y = 200, z = 200},
-			seed = 33,
-			octaves = 3,
-			persist = 0.7
-		},
-		biomes = {"rainforest_swamp", "savanna_swamp", "deciduous_forest_swamp"},
-		y_min = 0,
-		y_max = 0,
+		fill_ratio = 0.01, 
 		schematic = minetest.get_modpath("flowers").."/schematics/waterlily.mts",
 		rotation = "random",
 	})
