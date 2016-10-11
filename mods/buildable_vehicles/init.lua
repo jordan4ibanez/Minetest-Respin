@@ -9,7 +9,7 @@ local settings = {}
 settings.attach_scaling = 30
 settings.scaling = 0.667
 
-settings.car_size = 5
+settings.car_size = 20
 function settings.set(list)
   local set = {}
   for _, l in ipairs(list) do set[l] = true end
@@ -20,6 +20,8 @@ settings.node_table = settings.set{
 "buildable_vehicles:wheel",
 "buildable_vehicles:carpart",
 "buildable_vehicles:window",
+"buildable_vehicles:headlight",
+"buildable_vehicles:taillight",
 }
 
 dofile(minetest.get_modpath("buildable_vehicles").."/liquids.lua")

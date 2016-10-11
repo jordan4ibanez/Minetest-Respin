@@ -21,7 +21,7 @@ minetest.register_node("buildable_vehicles:car_control_node", {
 })
 minetest.register_node("buildable_vehicles:wheel", {
 	description = "Wheel",
-	tiles = {"wheel_top.png","wheel_top","wheel_top.png","wheel_top.png","wheel_side.png","wheel_side.png",},
+	tiles = {"wheel_top.png","wheel_top.png","wheel_top.png","wheel_top.png","wheel_side.png","wheel_side.png",},
 	groups = {cracky=3, stone=1},
 	paramtype2 = "facedir",
 })
