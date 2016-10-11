@@ -55,3 +55,29 @@ for number,colortable in pairs(colors) do
 		recipe = {"clay:fired_clay_"..colors[number][1]},
 	})
 end
+
+--colored brick
+for number,colortable in pairs(colors) do
+	minetest.register_node("clay:brick_"..colors[number][1], {
+		description = colors[number][3].." Brick Block",
+		paramtype2 = "facedir",
+		place_param2 = 0,
+		tiles = {"colored_clay_brick.png^[colorize:"..colors[number][2]..":100^colored_clay_brick_mortar.png"},
+		is_ground_content = false,
+		groups = {cracky = 3},
+		sounds = default.node_sound_stone_defaults(),
+	})
+	--dye wood
+	minetest.register_craft( {
+		type = "shapeless",
+		output = "clay:brick_"..colors[number][1],
+		recipe = {"default:brick",  "dye:"..colortable[1]},
+	})
+	--return wood to normal
+	minetest.register_craft( {
+		type = "shapeless",
+		output = "default:brick",
+		recipe = {"clay:brick_"..colors[number][1]},
+	})
+end
+

@@ -22,7 +22,7 @@ for number,colortable in pairs(colors) do
 	minetest.register_node("stained_glass:glass_"..colors[number][1], {
 		description = colors[number][3].." "..def.description,
 		drawtype = "glasslike_framed_optional",
-		tiles = {def.tiles[1].."^[colorize:"..colortable[2]..":170",def.tiles[2].."^[colorize:"..colortable[2]..":170"},
+		tiles = {def.tiles[1].."^[colorize:"..colortable[2]..":200",def.tiles[2].."^[colorize:"..colortable[2]..":200"},
 		paramtype = "light",
 		sunlight_propagates = true,
 		is_ground_content = false,
@@ -48,9 +48,9 @@ for number,colortable in pairs(colors) do
 
 	xpanes.register_pane("pane_"..colors[number][1], {
 		description = colors[number][3].." Glass Pane",
-		textures = {"default_glass.png".."^[colorize:"..colortable[2]..":170","xpanes_pane_half.png".."^[colorize:"..colortable[2]..":170","xpanes_white.png".."^[colorize:"..colortable[2]..":170"},
-		inventory_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
-		wield_image = "default_glass.png".."^[colorize:"..colortable[2]..":170",
+		textures = {"default_glass.png".."^[colorize:"..colortable[2]..":200","xpanes_pane_half.png".."^[colorize:"..colortable[2]..":200","xpanes_white.png".."^[colorize:"..colortable[2]..":200"},
+		inventory_image = "default_glass.png".."^[colorize:"..colortable[2]..":200",
+		wield_image = "default_glass.png".."^[colorize:"..colortable[2]..":200",
 		sounds = default.node_sound_glass_defaults(),
 		groups = {snappy=2, cracky=3, oddly_breakable_by_hand=3},
 		recipe = {
