@@ -108,7 +108,7 @@ end
 local function register_waterlily()
 	minetest.register_decoration({
 		deco_type = "schematic",
-		place_on = {"default:dirt", "default:sand"},
+		place_on = {"default:dirt"},
 		sidelen = 16,
 		fill_ratio = 0.01, 
 		schematic = minetest.get_modpath("flowers").."/schematics/waterlily.mts",
