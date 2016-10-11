@@ -9,22 +9,25 @@ local settings = {}
 settings.attach_scaling = 30
 settings.scaling = 0.667
 
-settings.ship_size = 5
-
-
-
-dofile(minetest.get_modpath("buildable_vehicles").."/liquids.lua")
-
-
+settings.car_size = 5
 function settings.set(list)
   local set = {}
   for _, l in ipairs(list) do set[l] = true end
   return set
 end
+settings.node_table = settings.set{
+"buildable_vehicles:car_control_node",
+"buildable_vehicles:wheel",
+"buildable_vehicles:carpart",
+"buildable_vehicles:window",
+}
 
-settings.node_table = settings.set{"default:wood","default:glass","stairs:stair_wood"}
+dofile(minetest.get_modpath("buildable_vehicles").."/liquids.lua")
+dofile(minetest.get_modpath("buildable_vehicles").."/car_parts.lua")
 
-minetest.register_entity("buildable_vehicles:ship_element", {
+
+
+minetest.register_entity("buildable_vehicles:car_element", {
 	initial_properties = {
 		physical = false,
 		collide_with_objects = true,
@@ -70,10 +73,7 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 	-- maybe have cannons, anchors, trolling lines, etc
 	on_step = function(self, dtime)
 		local velocity = self.object:getvelocity()
-		--remove old vessels for now
-		if self.controller == nil and self.parent == nil then
-			self.object:remove()
-		end
+
 		if self.parent ~= nil then
 			
 		else
@@ -93,7 +93,7 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 					y_goal = -10
 				end
 				local vel = {x=0,y=0,z=0}
-				if minetest.get_player_by_name(self.controller):get_attach() ~= nil and in_water > 0 then
+				if minetest.get_player_by_name(self.controller):get_attach() ~= nil then
 					if control.jump == true or control.sneak == true or control.up == true then
 						vel.y = -10
 						if control.up == true then
@@ -112,12 +112,12 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 		end
 	end,
 	on_rightclick = function(self, clicker)
-		if clicker:get_player_name() == self.controller then
+		if self.controller ~= nil and clicker:get_player_name() == self.controller then
 			clicker:set_detach()
-			--self.controller = nil
-		--elseif self.controller == nil then
-		--	clicker:set_attach()
-		--	self.controller = clicker:get_player_name()
+			self.controller = nil
+		elseif self.controller == nil then
+			clicker:set_attach(self.object, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
+			self.controller = clicker:get_player_name()
 		end
 	end,
 	--
@@ -125,18 +125,19 @@ minetest.register_entity("buildable_vehicles:ship_element", {
 
 
 function spawn_element(p, node)
-	local obj = core.add_entity(p, "buildable_vehicles:ship_element")
+	local obj = core.add_entity(p, "buildable_vehicles:car_element")
 	obj:get_luaentity():set_node(node)
 	return obj
 end
 
 function create_vessel(pos,param2)
 
-	local parent = spawn_element(pos, {name="buildable_vehicles:control_node"})
-	parent:get_luaentity().object:set_properties({stepheight = 2, automatic_face_movement_dir = (90 * param2)-90, physical = true})--, parent = true})
+	local parent = spawn_element(pos, {name="buildable_vehicles:ghost_parent"})
+	parent:get_luaentity().object:set_properties({stepheight = 2, automatic_face_movement_dir = (90 * param2)-90, physical = true})
+	
 	local basepos = pos
 
-	local range = settings.ship_size
+	local range = settings.car_size
 	
 	
 	
@@ -161,7 +162,6 @@ function create_vessel(pos,param2)
 				local pos = {x=basepos.x+x,y=basepos.y+y,z=basepos.z+z}
 				--entities for the vessel
 				local node = vm:get_node_at(pos).name
-				
 				---the facedir of the node for node entity
 				local face_direction = vm:get_node_at(pos).param2
 				--print(face_direction)
@@ -190,7 +190,6 @@ function create_vessel(pos,param2)
 					if z > collision_box_width_z then
 						collision_box_width_z = z
 					end
-						
 				end
 			end
 		end
@@ -218,18 +217,14 @@ function create_vessel(pos,param2)
 end
 
 
-minetest.register_node("buildable_vehicles:control_node", {
-	description = "Control Node",
-	tiles = {
-		"default_furnace_top.png^default_mineral_diamond.png", "default_furnace_bottom.png",
-		"default_furnace_side.png", "default_furnace_side.png",
-		"default_furnace_side.png", "default_furnace_front.png"
-	},
-	groups = {cracky=3, stone=1},
-	paramtype2 = "facedir",
-	on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-		local vessel = create_vessel(pos,node.param2)
-		player:set_attach(vessel, "", {x=0,y=0,z=0}, {x=0,y=0,z=0})
-		vessel:get_luaentity().controller = player:get_player_name()
-	end,
+
+--the node which every part of the car connects to IE fake node that works like an anchor
+minetest.register_node("buildable_vehicles:ghost_parent", {
+	drawtype = "airlike",
+	walkable = false,
+	buildable_to = true,
+	diggable = false,
+	pointable = false,
+	paramtype = "light",
+	sunlight_propagates = true,
 })
