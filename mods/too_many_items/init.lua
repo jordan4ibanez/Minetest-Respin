@@ -50,7 +50,7 @@ player_pages = {}
 recipe_page  = {}
 minetest.register_on_joinplayer(function(player)
 	player_pages[player:get_player_name()] = 0
-	recipe_page[player:get_player_name()] = 0
+	recipe_page[player:get_player_name()] = 1
 	update_player_too_many_items(player)
 end)
 
@@ -77,10 +77,18 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			show_recipe_too_many_items(player,item)
 		end
 	end
+	--cycle recipes
+	if fields.PREVRECIPE then
+		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] - 1
+	end
+	if fields.NEXTRECIPE then
+		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] + 1
+	end
 end)
 
 
 function update_player_too_many_items(player)
+	recipe_page[player:get_player_name()] = 1
 	local formspec = "size[14,8.5]bgcolor[#080808BB;true]background[5,5;1,1;gui_formbg.png;true]listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]list[current_player;main;0,4.25;8,1;]list[current_player;main;0,5.5;8,3;8]list[current_player;craft;1.75,0.5;3,3;]list[current_player;craftpreview;5.75,1.5;1,1;]image[4.75,1.5;1,1;gui_furnace_arrow_bg.png^[transformR270]listring[current_player;main]listring[current_player;craft]image[0,4.25;1,1;gui_hb_bg.png]image[1,4.25;1,1;gui_hb_bg.png]image[2,4.25;1,1;gui_hb_bg.png]image[3,4.25;1,1;gui_hb_bg.png]image[4,4.25;1,1;gui_hb_bg.png]image[5,4.25;1,1;gui_hb_bg.png]image[6,4.25;1,1;gui_hb_bg.png]image[7,4.25;1,1;gui_hb_bg.png]"
 	local count = player_pages[player:get_player_name()] * (8*6) + 1
 	for y = 0,7 do
@@ -108,15 +116,15 @@ function show_recipe_too_many_items(player, item)
 	
 	local recipe = minetest.get_all_craft_recipes(item)
 	
-	recipe_selection = 1 -- get the player's selection of craft recipe
+	recipe_selection = recipe_page[player:get_player_name()] -- get the player's selection of craft recipe
 
 	
-	print(dump(recipe[recipe_selection]["items"][1]))
+	print(dump(table.getn(recipe[recipe_selection])))
 	
 	for y = 1,3 do
 		for x = 1,3 do
 			--print(dump(recipe[recipe_selection]["items"]))
-			print(dump(recipe[recipe_selection]["items"][count]))
+			--print(dump(recipe[recipe_selection]["items"][count]))
 			if recipe[recipe_selection]["items"][count] then
 				formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..recipe[recipe_selection]["items"][count]..";"..recipe[recipe_selection]["items"][count]..";]"
 			end
@@ -125,6 +133,10 @@ function show_recipe_too_many_items(player, item)
 	end
 	--output
 	formspec = formspec.."item_image_button["..tostring(5.75)..","..tostring(1.5)..";1,1;"..item..";"..item..";]"
+	
+	--navigate recipes
+	formspec = formspec.."button[1.5,3.4;1.5,1;PREVRECIPE;PREV]"
+	formspec = formspec.."button[3.5,3.4;1.5,1;NEXTRECIPE;NEXT]"	
 	--navigation buttons
 	--page length 
 	local page = (player_pages[player:get_player_name()]+1).."/"..(math.ceil(total_items/((8*6) + 1)))
