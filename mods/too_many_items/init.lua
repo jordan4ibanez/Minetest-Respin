@@ -195,9 +195,12 @@ function update_too_many_items(player, item)
 							formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..item..";"..item..";]"
 						else
 							--do a blank space to preserve shape
-							--formspec = formspec.."button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;;]"
+							formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;;;]"
 						end
 						count = count + 1
+					else
+						--do a blank space to preserve shape
+						formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;;;]"
 					end
 				end
 			end
