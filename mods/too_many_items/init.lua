@@ -1,5 +1,8 @@
 --this needs to depend on all mods which have craftable items
 
+
+--add cooking recipes
+
 --[[
 minetest.compress(data, method, ...)`: returns `compressed_data`
     * Compress a string of data.
@@ -15,7 +18,7 @@ minetest.compress(data, method, ...)`: returns `compressed_data`
     * `...` indicates method-specific arguments. Currently, no methods use this.
 ]]--
 
---create a compressed table of all recipes
+--create a table of all recipes - maybe compressed
 too_many_items_table = {}
 
 --go through each mod after everything is online
@@ -83,7 +86,10 @@ end)
 --cycle through items in the sidebar and allow for recipes to be read out
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.quit then
-		print("RESET ALL THE TABLES SO THAT THE FORMSPEC DOESN'T CYCLE THROUGH GROUP ITEMS WHILE THE PLAYER ISN'T LOOKING AT INVENTORY")
+		player_item_recipe[player:get_player_name()] = ""
+		player_item_recipe_cyle[player:get_player_name()] = 0
+		player_item_recipe_table[player:get_player_name()] = {}
+		update_too_many_items(player, nil)
 	end
 	if fields.PREV then
 		player_pages[player:get_player_name()] = player_pages[player:get_player_name()] - 1
@@ -117,12 +123,21 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		update_too_many_items(player)
 	end
 	
+	if fields.CLOSERECIPE then
+		player_item_recipe[player:get_player_name()] = ""
+		player_item_recipe_cyle[player:get_player_name()] = 0
+		player_item_recipe_table[player:get_player_name()] = {}
+		update_too_many_items(player, nil)
+	end
+	
 	--show the recipes to the player -- THIS IS WHAT GETS RUN ON EACH ITEM BUTTON PRESS
 	for item,_ in pairs(fields) do
-		if minetest.get_all_craft_recipes(item) then
-			--reset the recipe selection when selecting new item
-			recipe_page[player:get_player_name()] = 1
-			update_too_many_items(player,item)
+		if item ~= "" then
+			if minetest.get_all_craft_recipes(item) then
+				--reset the recipe selection when selecting new item
+				recipe_page[player:get_player_name()] = 1
+				update_too_many_items(player,item)
+			end
 		end
 	end
 
@@ -164,11 +179,11 @@ function update_too_many_items(player, item)
 		
 		
 		--show the number of recipes
-		formspec = formspec.."label[3,3.5;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
+		formspec = formspec.."label[3,0;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
 		--
 		--table.getn(recipe)
-		print("-------")
-		print(dump(recipe[1]))
+		--print("-------")
+		--print(dump(recipe[1]))
 		for y = 1,3 do
 			for x = 1,3 do
 				if recipe[recipe_page[player:get_player_name()]] then
@@ -209,7 +224,9 @@ function update_too_many_items(player, item)
 		formspec = formspec.."item_image_button["..tostring(5.75)..","..tostring(1.5)..";1,1;"..player_item..";"..player_item..";]"
 		--navigate recipes
 		formspec = formspec.."button[1.5,3.4;1.5,1;PREVRECIPE;PREV]"
-		formspec = formspec.."button[3.5,3.4;1.5,1;NEXTRECIPE;NEXT]"	
+		formspec = formspec.."button[3.5,3.4;1.5,1;NEXTRECIPE;NEXT]"
+		--remove craft recipe
+		formspec = formspec.."button[6,3.4;1.5,1;CLOSERECIPE;CLOSE]"	
 	end
 	----
 	
