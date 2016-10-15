@@ -41,28 +41,27 @@ minetest.after(0, function()
 	local count = 1
 	for _,mods in pairs(minetest.get_modnames()) do
 		for key,value in pairs(minetest.registered_items) do
-			if string.match(key, mods) then
-				--add it to the search if shouldn't be in creative
-				--if not value.groups.not_in_creative_inventory then
-					too_many_items_table[count] = key
-					--add the item to it's respective groups
-					for group,_ in pairs(minetest.registered_items[key].groups) do
-						if not too_many_items_group_items[group] then
-							too_many_items_group_items[group] = {}
+			--don't put it in the table if it doesn't have a recipe
+			if minetest.get_craft_recipe(key).items ~= nil then
+				if string.match(key, mods) then
+					--add it to the search if shouldn't be in creative
+					--if not value.groups.not_in_creative_inventory then
+						too_many_items_table[count] = key
+						--add the item to it's respective groups if it has a recipe
+						for group,_ in pairs(minetest.registered_items[key].groups) do
+							if not too_many_items_group_items[group] then
+								too_many_items_group_items[group] = {}
+							end
+							table.insert(too_many_items_group_items[group], key)
+							--too_many_items_group_items[group] = too_many_items_group_items[group]+key
 						end
-						table.insert(too_many_items_group_items[group], key)
-						--too_many_items_group_items[group] = too_many_items_group_items[group]+key
-					end
-					count = count + 1
-				--end
+						count = count + 1
+					--end
+				end
 			end
 		end
 	end
 	total_items = count
-	
-	
-	--test
-	--print(dump(too_many_items_group_items))
 end)
 
 
@@ -204,10 +203,7 @@ function update_too_many_items(player, item)
 		
 		--show the number of recipes
 		formspec = formspec.."label[3,0;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
-		--
-		--table.getn(recipe)
-		print("-------")
-		print(dump(recipe[recipe_page[player:get_player_name()]]))
+
 		for y = 1,3 do
 			for x = 1,3 do
 				if recipe[recipe_page[player:get_player_name()]] then
