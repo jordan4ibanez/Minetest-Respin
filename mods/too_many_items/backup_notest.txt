@@ -1,0 +1,9 @@
+				--get the items in the group
+				local group_test = recipe[recipe_selection]["items"][count]:gsub("group:", "")
+				--if too_many_items_group_items[group_test] then
+				--	print(recipe[recipe_selection]["items"][count])
+				--	local group_item = too_many_items_group_items[group_test][1] --make this the item cycle for it's group
+				--	formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..group_item..";"..group_item..";]"
+				--else
+					formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..recipe[recipe_selection]["items"][count]..";"..recipe[recipe_selection]["items"][count]..";]"
+				--end
