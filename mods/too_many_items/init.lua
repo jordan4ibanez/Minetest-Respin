@@ -104,13 +104,24 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	--cycle recipes --FIX
 	if fields.PREVRECIPE then
 		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] - 1
+		if recipe_page[player:get_player_name()] < 1 then
+			recipe_page[player:get_player_name()] = table.getn(minetest.get_all_craft_recipes(player_item_recipe[player:get_player_name()]))
+		end
+		update_too_many_items(player)
 	end
 	if fields.NEXTRECIPE then
 		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] + 1
+		if recipe_page[player:get_player_name()] > table.getn(minetest.get_all_craft_recipes(player_item_recipe[player:get_player_name()])) then
+			recipe_page[player:get_player_name()] = 1
+		end
+		update_too_many_items(player)
 	end
-	--show the recipes to the player
+	
+	--show the recipes to the player -- THIS IS WHAT GETS RUN ON EACH ITEM BUTTON PRESS
 	for item,_ in pairs(fields) do
 		if minetest.get_all_craft_recipes(item) then
+			--reset the recipe selection when selecting new item
+			recipe_page[player:get_player_name()] = 1
 			update_too_many_items(player,item)
 		end
 	end
@@ -141,11 +152,22 @@ function update_too_many_items(player, item)
 	formspec = formspec.."button[9,8;1.5,1;PREV;PREV]"
 	formspec = formspec.."button[12,8;1.5,1;NEXT;NEXT]"
 	---
+	if item ~= nil then
+		player_item_recipe[player:get_player_name()] = item
+	end
+	print(dump(item))
+	
 	
 	--this is the display of recipes
-	if item ~= "" and item ~= nil then
+	local player_item = player_item_recipe[player:get_player_name()]
+	if (item ~= "" and item ~= nil) or (player_item ~= "" and player_item ~= nil) then
 		local count  = 1
-		local recipe = minetest.get_all_craft_recipes(item)
+		local recipe = minetest.get_all_craft_recipes(player_item)
+		
+		
+		--show the number of recipes
+		formspec = formspec.."label[3,3.5;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
+		--
 		for y = 1,3 do
 			for x = 1,3 do
 				if recipe[recipe_page[player:get_player_name()]] then
@@ -168,8 +190,13 @@ function update_too_many_items(player, item)
 				count = count + 1
 			end
 		end
+		--output
+		formspec = formspec.."item_image_button["..tostring(5.75)..","..tostring(1.5)..";1,1;"..player_item..";"..player_item..";]"
+		--navigate recipes
+		formspec = formspec.."button[1.5,3.4;1.5,1;PREVRECIPE;PREV]"
+		formspec = formspec.."button[3.5,3.4;1.5,1;NEXTRECIPE;NEXT]"	
 	end
-	
+	----
 	
 	
 	player:set_inventory_formspec(formspec)	
