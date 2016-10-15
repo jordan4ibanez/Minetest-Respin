@@ -155,8 +155,6 @@ function update_too_many_items(player, item)
 	if item ~= nil then
 		player_item_recipe[player:get_player_name()] = item
 	end
-	print(dump(item))
-	
 	
 	--this is the display of recipes
 	local player_item = player_item_recipe[player:get_player_name()]
@@ -168,26 +166,40 @@ function update_too_many_items(player, item)
 		--show the number of recipes
 		formspec = formspec.."label[3,3.5;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
 		--
+		--table.getn(recipe)
+		print("-------")
+		print(dump(recipe[1]))
 		for y = 1,3 do
 			for x = 1,3 do
 				if recipe[recipe_page[player:get_player_name()]] then
-					if recipe[recipe_page[player:get_player_name()]]["items"][count] then
-					
-						local group_test = recipe[recipe_page[player:get_player_name()]]["items"][count]:gsub("group:", "")
+					local wide = recipe[recipe_page[player:get_player_name()]].width
+					if wide == 0 then
+						wide = 3
+					end
+					if x <= wide then
 						
-						local item = recipe[recipe_page[player:get_player_name()]]["items"][count]
-					
-						if too_many_items_group_items[group_test] then
+						
+						if recipe[recipe_page[player:get_player_name()]]["items"][count] then
 							
-							if not player_item_recipe_table[player:get_player_name()][group_test] then
-								player_item_recipe_table[player:get_player_name()][group_test] = 1
+							local group_test = recipe[recipe_page[player:get_player_name()]]["items"][count]:gsub("group:", "")
+							
+							local item = recipe[recipe_page[player:get_player_name()]]["items"][count]
+						
+							if too_many_items_group_items[group_test] then
+								
+								if not player_item_recipe_table[player:get_player_name()][group_test] then
+									player_item_recipe_table[player:get_player_name()][group_test] = 1
+								end
+								item = too_many_items_group_items[group_test][player_item_recipe_table[player:get_player_name()][group_test]]
 							end
-							item = too_many_items_group_items[group_test][player_item_recipe_table[player:get_player_name()][group_test]]
+							formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..item..";"..item..";]"
+						else
+							--do a blank space to preserve shape
+							--formspec = formspec.."button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;;]"
 						end
-						formspec = formspec.."item_image_button["..tostring(x + 0.75)..","..tostring(y-0.5)..";1,1;"..item..";"..item..";]"
+						count = count + 1
 					end
 				end
-				count = count + 1
 			end
 		end
 		--output
