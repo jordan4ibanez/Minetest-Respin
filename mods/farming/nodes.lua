@@ -202,3 +202,72 @@ minetest.override_item("default:junglegrass", {drop = {
 		{items = {'farming:seed_cotton'},rarity = 8},
 	}
 }})
+
+--pumpkins
+minetest.register_node("farming:pumpkin", {
+	description = ("Pumpkin"),
+	paramtype2 = "facedir",
+	tiles = {"farming_pumpkin_top.png", "farming_pumpkin_top.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png"},
+	groups = {choppy=2, oddly_breakable_by_hand=2, flammable=2, plant=1},
+	sounds = default.node_sound_wood_defaults(),
+	on_punch = function(pos, node, puncher)
+		local tool = puncher:get_wielded_item():get_name()
+		if tool and string.match(tool, "sword") then
+			node.name = "farming:jackolantern"
+			minetest.set_node(pos, node)
+			local item = minetest.add_item(pos, "farming:pumpkin_seed")
+			item:setvelocity({x=math.random(-2,2),y=math.random(2,3),z=math.random(-2,2)})
+			if math.random(1, 5) == 1 then
+				local item = minetest.add_item(pos, "farming:pumpkin_seed")
+				item:setvelocity({x=math.random(-2,2),y=math.random(2,3),z=math.random(-2,2)})
+			end
+		end
+	end
+})
+minetest.register_node("farming:jackolantern", {
+	description = ("Jackolantern"),
+	paramtype2 = "facedir",
+	tiles = {"farming_pumpkin_top.png", "farming_pumpkin_top.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_face.png"},
+	groups = {choppy=2, oddly_breakable_by_hand=2, flammable=2},
+	sounds = default.node_sound_wood_defaults(),
+})
+minetest.register_node("farming:jackolantern_lit", {
+	description = ("Jackolantern Lit"),
+	paramtype2 = "facedir",
+	light_source = LIGHT_MAX-2,
+	tiles = {"farming_pumpkin_top.png", "farming_pumpkin_top.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_face_light.png"},
+	groups = {choppy=2, oddly_breakable_by_hand=2, flammable=2},
+	sounds = default.node_sound_wood_defaults(),
+})
+--pumpin plant
+for i = 1,5 do
+	local drop = ""
+	if i == 5 then
+		drop = "farming:pumpkin_seed "..math.random(1,3)
+	end
+	minetest.register_node("farming:pumpkin_plant_"..i, {
+		description = "farming:pumpkin_plant_"..i,
+		tiles = {"pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png^[transformFX"},
+		drop = drop,
+		groups = {snappy = 3, attached_node = 1, plant = 1, dig_immediate = 3},
+		sounds = default.node_sound_dirt_defaults(),
+		drawtype = "nodebox",
+		paramtype = "light",
+		paramtype2 = "facedir",
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, -0.5, 0, 0.5, 0.5, 0},
+			},
+		},
+		selection_box = {
+				type = "fixed",
+				fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
+			},
+		soil = {
+			base = "default:desert_sand",
+			dry = "farming:desert_sand_soil",
+			wet = "farming:desert_sand_soil_wet"
+		}
+	})
+end
