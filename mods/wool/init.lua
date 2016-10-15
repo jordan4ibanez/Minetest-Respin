@@ -31,11 +31,10 @@ for i = 1, #dyes do
 				flammable = 3, wool = 1},
 		sounds = default.node_sound_defaults(),
 	})
-
 	minetest.register_craft{
 		type = "shapeless",
 		output = "wool:" .. name,
-		recipe = {"group:dye," .. craft_color_group, "group:wool"},
+		recipe = {"dye:" .. name, "group:wool"},
 	}
 end
 

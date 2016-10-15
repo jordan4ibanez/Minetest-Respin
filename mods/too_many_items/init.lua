@@ -59,7 +59,12 @@ minetest.after(0, function()
 		end
 	end
 	total_items = count
+	
+	
+	--test
+	--print(dump(too_many_items_group_items))
 end)
+
 
 --access all the recipes
 if too_many_items_table then
@@ -85,13 +90,16 @@ end)
 
 --cycle through items in the sidebar and allow for recipes to be read out
 minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local playsound = 0
 	if fields.quit then
+		playsound = 1
 		player_item_recipe[player:get_player_name()] = ""
 		player_item_recipe_cyle[player:get_player_name()] = 0
 		player_item_recipe_table[player:get_player_name()] = {}
 		update_too_many_items(player, nil)
 	end
 	if fields.PREV then
+		playsound = 1
 		player_pages[player:get_player_name()] = player_pages[player:get_player_name()] - 1
 		if player_pages[player:get_player_name()] < 0 then
 			 player_pages[player:get_player_name()] = (math.ceil(total_items/((8*6) + 1)))-1
@@ -100,6 +108,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		player_item_recipe_table[player:get_player_name()] = {}
 	end
 	if fields.NEXT then
+		playsound = 1
 		player_pages[player:get_player_name()] = player_pages[player:get_player_name()] + 1
 		if (math.ceil(total_items/((8*6) + 1)))-1 < player_pages[player:get_player_name()] then
 			player_pages[player:get_player_name()] = 0
@@ -109,6 +118,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	--cycle recipes --FIX
 	if fields.PREVRECIPE then
+		playsound = 1
 		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] - 1
 		if recipe_page[player:get_player_name()] < 1 then
 			recipe_page[player:get_player_name()] = table.getn(minetest.get_all_craft_recipes(player_item_recipe[player:get_player_name()]))
@@ -116,6 +126,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		update_too_many_items(player)
 	end
 	if fields.NEXTRECIPE then
+		playsound = 1
 		recipe_page[player:get_player_name()] = recipe_page[player:get_player_name()] + 1
 		if recipe_page[player:get_player_name()] > table.getn(minetest.get_all_craft_recipes(player_item_recipe[player:get_player_name()])) then
 			recipe_page[player:get_player_name()] = 1
@@ -124,6 +135,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	
 	if fields.CLOSERECIPE then
+		playsound = 1
 		player_item_recipe[player:get_player_name()] = ""
 		player_item_recipe_cyle[player:get_player_name()] = 0
 		player_item_recipe_table[player:get_player_name()] = {}
@@ -132,6 +144,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	
 	--show the recipes to the player -- THIS IS WHAT GETS RUN ON EACH ITEM BUTTON PRESS
 	for item,_ in pairs(fields) do
+		playsound = 1
 		if item ~= "" then
 			if minetest.get_all_craft_recipes(item) then
 				--reset the recipe selection when selecting new item
@@ -140,6 +153,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end
 		end
 	end
+	
+	--button sound for menu, can also help feel for server lag
+	--make this a toggleable setting for the player
+	--[[
+	if playsound == 1 then
+		minetest.sound_play("too_many_items_button", {
+			to_player = player,
+			gain = 1.0,
+		})		
+	end
+	]]--
 
 end)
 
@@ -182,8 +206,8 @@ function update_too_many_items(player, item)
 		formspec = formspec.."label[3,0;"..recipe_page[player:get_player_name()].."/"..table.getn(recipe).."]"
 		--
 		--table.getn(recipe)
-		--print("-------")
-		--print(dump(recipe[1]))
+		print("-------")
+		print(dump(recipe[recipe_page[player:get_player_name()]]))
 		for y = 1,3 do
 			for x = 1,3 do
 				if recipe[recipe_page[player:get_player_name()]] then
