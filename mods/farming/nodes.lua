@@ -230,6 +230,13 @@ minetest.register_node("farming:jackolantern", {
 	tiles = {"farming_pumpkin_top.png", "farming_pumpkin_top.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_side.png", "farming_pumpkin_face.png"},
 	groups = {choppy=2, oddly_breakable_by_hand=2, flammable=2},
 	sounds = default.node_sound_wood_defaults(),
+	on_punch = function(pos, node, puncher)
+		local tool = puncher:get_wielded_item():get_name()
+		if tool and string.match(tool, "torch") then
+			node.name = "farming:jackolantern_lit"
+			minetest.set_node(pos, node)
+		end
+	end
 })
 minetest.register_node("farming:jackolantern_lit", {
 	description = ("Jackolantern Lit"),
@@ -242,9 +249,6 @@ minetest.register_node("farming:jackolantern_lit", {
 --pumpin plant
 for i = 1,5 do
 	local drop = ""
-	if i == 5 then
-		drop = "farming:pumpkin_seed "..math.random(1,3)
-	end
 	minetest.register_node("farming:pumpkin_plant_"..i, {
 		description = "farming:pumpkin_plant_"..i,
 		tiles = {"pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png","pumpkin_plant_"..i..".png^[transformFX"},
@@ -254,6 +258,8 @@ for i = 1,5 do
 		drawtype = "nodebox",
 		paramtype = "light",
 		paramtype2 = "facedir",
+		sunlight_propagates = true,
+		walkable = false,
 		node_box = {
 			type = "fixed",
 			fixed = {
@@ -264,10 +270,107 @@ for i = 1,5 do
 				type = "fixed",
 				fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
 			},
-		soil = {
-			base = "default:desert_sand",
-			dry = "farming:desert_sand_soil",
-			wet = "farming:desert_sand_soil_wet"
-		}
 	})
+	
+	minetest.register_abm{
+		nodenames = {"farming:pumpkin_plant_"..i},
+		--neighbors = {"farming:soil","farming:soil_wet"},
+		interval = 1,
+		chance = 1,
+		action = function(pos)
+			local node_below = minetest.get_node({x=pos.x,y=pos.y-1,z=pos.z}).name
+			if i < 5 then
+				if node_below == "farming:soil" or node_below == "farming:soil_wet" then
+					minetest.set_node(pos,{name="farming:pumpkin_plant_"..i+1})
+				end
+			else
+				local left  = minetest.get_node({x=pos.x-1,y=pos.y,z=pos.z}).name
+				local right = minetest.get_node({x=pos.x+1,y=pos.y,z=pos.z}).name
+				local front = minetest.get_node({x=pos.x,y=pos.y,z=pos.z+1}).name
+				local back  = minetest.get_node({x=pos.x,y=pos.y,z=pos.z-1}).name
+				
+				if      left == "air" then
+					minetest.set_node(pos,{name="farming:pumpkin_plant_"..i+1,param2 = 0})
+					minetest.set_node({x=pos.x-1,y=pos.y,z=pos.z}, {name="farming:pumpkin"})
+				elseif right == "air" then
+					minetest.set_node(pos,{name="farming:pumpkin_plant_"..i+1,param2 = 2})
+					minetest.set_node({x=pos.x+1,y=pos.y,z=pos.z}, {name="farming:pumpkin"})
+				elseif front == "air" then
+					minetest.set_node(pos,{name="farming:pumpkin_plant_"..i+1,param2 = 1})
+					minetest.set_node({x=pos.x,y=pos.y,z=pos.z+1}, {name="farming:pumpkin"})
+				elseif  back == "air" then
+					minetest.set_node(pos,{name="farming:pumpkin_plant_"..i+1,param2 = 3})
+					minetest.set_node({x=pos.x,y=pos.y,z=pos.z-1}, {name="farming:pumpkin"})
+				end
+			end
+		end,
+	}
 end
+--fully grown pumpkin plant
+minetest.register_node("farming:pumpkin_plant_6", {
+	description = "farming:pumpkin_plant_6",
+	tiles = {"pumpkin_plant_6.png","pumpkin_plant_6.png","pumpkin_plant_6.png","pumpkin_plant_6.png","pumpkin_plant_6.png","pumpkin_plant_6.png^[transformFX"},
+	drop = "farming:pumpkin_seed",
+	groups = {snappy = 3, attached_node = 1, plant = 1, dig_immediate = 3},
+	sounds = default.node_sound_dirt_defaults(),
+	drawtype = "nodebox",
+	paramtype = "light",
+	paramtype2 = "facedir",
+	sunlight_propagates = true,
+	walkable = false,
+	node_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5, -0.5, 0, 0.5, 0.5, 0},
+		},
+	},
+	selection_box = {
+			type = "fixed",
+			fixed = {-0.5, -0.5, -0.5, 0.5, -5/16, 0.5},
+		},
+})
+
+minetest.register_craftitem("farming:pumpkin_seed", {
+	description = "Pumpkin Seed",
+	inventory_image = "farming_pumpkin_seed.png",
+	on_place = function(itemstack, placer, pointed_thing)
+		local pointed_node = minetest.get_node(pointed_thing.under).name
+		local above_node = minetest.get_node(pointed_thing.above).name
+		if pointed_thing.under.x == pointed_thing.above.x and pointed_thing.under.z == pointed_thing.above.z then
+			if pointed_node == "farming:soil" or pointed_node == "farming:soil_wet" then
+				if above_node == "air" then
+					minetest.set_node(pointed_thing.above, {name="farming:pumpkin_plant_1"})
+					itemstack:take_item()
+					return(itemstack)
+				end
+			end
+		end
+	end,
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "farming:pumpkin_seed 3",
+	recipe = {"farming:pumpkin"},
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "farming:pumpkin_seed 1",
+	recipe = {"farming:jackolantern"},
+})
+minetest.register_craft({
+	type = "shapeless",
+	output = "farming:jackolantern",
+	recipe = {"farming:jackolantern_lit"},
+})
+
+minetest.register_decoration({
+	deco_type = "simple",
+	place_on = "default:dirt_with_grass",
+	sidelen = 16,
+	fill_ratio = 0.001,
+	--biomes = {"grassland"},
+	decoration = "farming:pumpkin",
+	height = 1,
+})
