@@ -365,6 +365,7 @@ minetest.register_craft({
 	recipe = {"farming:jackolantern_lit"},
 })
 
+--make pumpkins spawn
 minetest.register_decoration({
 	deco_type = "simple",
 	place_on = "default:dirt_with_grass",
@@ -373,4 +374,19 @@ minetest.register_decoration({
 	--biomes = {"grassland"},
 	decoration = "farming:pumpkin",
 	height = 1,
+})
+
+--pumpkin pie
+minetest.register_craft({
+	output = "farming:pumpkin_pie",
+	recipe = {
+		{"farming:flour","farming:flour", "farming:flour"},
+		{"farming:sugar", "farming:pumpkin", "farming:sugar"},
+		{"farming:flour", "farming:flour", "farming:flour"}
+	}
+})
+minetest.register_craftitem("farming:pumpkin_pie", {
+	description = "Pumpkin Pie",
+	inventory_image = "pumpkin_pie.png",
+	on_use = minetest.item_eat(8),
 })
