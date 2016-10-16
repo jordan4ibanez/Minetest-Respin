@@ -338,38 +338,40 @@ function register_mob_land(name, def)
 		if self.hostile == true then
 			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.chase_rad)) do
 				if object:is_player() then
-					--modified simplemobs api
-					local pos2 = object:getpos()
-					local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
-					local yaw = math.atan(vec.z/vec.x)+math.pi/2
-					if self.drawtype == "side" then
-						yaw = yaw+(math.pi/2)
-					end
-					if pos.x > pos2.x then
-						yaw = yaw+math.pi
-					end
-					--self.object:setyaw(yaw)
-					local v = def.max_speed
-					local x = math.sin(yaw) * v
-					local z = math.cos(yaw) * -v
+					if object:get_hp() > 0 then
+						--modified simplemobs api
+						local pos2 = object:getpos()
+						local vec = {x=pos.x-pos2.x, y=pos.y-pos2.y, z=pos.z-pos2.z}
+						local yaw = math.atan(vec.z/vec.x)+math.pi/2
+						if self.drawtype == "side" then
+							yaw = yaw+(math.pi/2)
+						end
+						if pos.x > pos2.x then
+							yaw = yaw+math.pi
+						end
+						--self.object:setyaw(yaw)
+						local v = def.max_speed
+						local x = math.sin(yaw) * v
+						local z = math.cos(yaw) * -v
 
-					self.vel_goal_x = x
-					self.vel_goal_z = z						
-					
-					for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
-						if object:is_player() then
-							if self.attack_timer > def.attack_cooldown then
-								object:set_hp(object:get_hp()-def.attack_damage)
-								self.attack_timer = 0
-								minetest.sound_play(def.attack_sound, {
-									pos = pos,
-									max_hear_distance = 10,
-									gain = 10.0,
-								})
+						self.vel_goal_x = x
+						self.vel_goal_z = z						
+						
+						for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, def.attack_rad)) do
+							if object:is_player() then
+								if self.attack_timer > def.attack_cooldown then
+									object:set_hp(object:get_hp()-def.attack_damage)
+									self.attack_timer = 0
+									minetest.sound_play(def.attack_sound, {
+										pos = pos,
+										max_hear_distance = 10,
+										gain = 10.0,
+									})
+								end
 							end
 						end
+						break
 					end
-					break
 				end
 			end
 			
