@@ -390,3 +390,101 @@ minetest.register_craftitem("farming:pumpkin_pie", {
 	inventory_image = "pumpkin_pie.png",
 	on_use = minetest.item_eat(8),
 })
+
+--cake
+local cake_count = 0
+for i = 1,8 do
+	--correct plural description
+	local description = ""
+	if i > 1 then
+		description = "Cake ("..i.." Slices)"
+	else
+		description = "Cake (1 Slice)"
+	end
+	minetest.register_node("farming:cake_"..i, {
+		description = description,
+		tiles = {"cake_top.png","cake_bottom.png","cake_side.png","cake_side.png","cake_side.png","cake_side.png"},
+		drop = "farming:cake_slice "..i,
+		sounds = default.node_sound_defaults(),
+		groups = { dig_immediate = 2, cake = 1, attached_node = 1},
+		sounds = default.node_sound_dirt_defaults(),
+		drawtype = "nodebox",
+		paramtype = "light",
+		paramtype2 = "facedir",
+		sunlight_propagates = false,
+		node_box = {
+			type = "fixed",
+			fixed = {
+				{-0.5, -0.5, -0.5+((8-i)/8), 0.5, 0, 0.5},
+			},
+		},
+		on_rightclick = function(pos, node, player, itemstack, pointed_thing)
+			if i > 1 then
+				local param2 = minetest.get_node(pos).param2
+				minetest.set_node(pos, {name="farming:cake_"..i-1,param2=param2})
+			else
+				minetest.remove_node(pos)
+			end
+			player:set_hp(player:get_hp()+4)
+			local pos2 = player:getpos()
+			minetest.sound_play("bite_item_drop", {
+				pos = pos2,
+				max_hear_distance = 20,
+				gain = 1.0,
+			})
+			minetest.add_particlespawner({
+				 amount = 20,
+				 time = 0.1,
+				 minpos = {x=pos2.x, y=pos2.y+1.5, z=pos2.z},
+				 maxpos = {x=pos2.x, y=pos2.y+1.5, z=pos2.z},
+				 minvel = {x=-1, y=1, z=-1},
+				 maxvel = {x=1, y=2, z=1},
+				 minacc = {x=0, y=-5, z=0},
+				 maxacc = {x=0, y=-9, z=0},
+				 minexptime = 1,
+				 maxexptime = 1,
+				 minsize = 1,
+				 maxsize = 2,
+				 collisiondetection = true,
+				 vertical = false,
+				 texture = "heart.png",
+			})
+		end
+	})
+	--make craftable from cake slices
+	minetest.register_craftitem("farming:cake_slice", {
+		description = "Slice of Cake",
+		inventory_image = "cake_slice.png",
+		on_use = minetest.item_eat(4),
+	})
+	local recipe = {}
+	for h = 1,i do
+		table.insert(recipe, "farming:cake_slice")
+	end
+	minetest.register_craft({
+		type = "shapeless",
+		output = "farming:cake_"..i,
+		recipe = recipe,
+	})
+	--make slices craftable from cake
+	minetest.register_craft({
+		type = "shapeless",
+		output = "farming:cake_slice "..i,
+		recipe = {
+			"farming:cake_"..i,
+		},
+	})	
+	cake_count = cake_count + 1
+end
+--craft cake
+minetest.register_craft({
+	output = "farming:cake_8",
+	recipe = {
+		{"farming:flour", "farming:flour", "farming:flour"},
+		{"farming:sugar", "bucket:bucket_water", "farming:sugar"},
+		{"farming:flour", "farming:flour", "farming:flour"}
+	},
+	replacements = {
+		{"bucket:bucket_water", "bucket:bucket_empty"}
+	}
+})
