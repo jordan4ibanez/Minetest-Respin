@@ -88,8 +88,8 @@ farming.register_hoe = function(name, def)
 	minetest.register_tool(name, {
 		description = def.description,
 		inventory_image = def.inventory_image,
-		on_use = function(itemstack, user, pointed_thing)
-			return farming.hoe_on_use(itemstack, user, pointed_thing, def.max_uses)
+		on_place = function(itemstack, placer, pointed_thing)
+			return farming.hoe_on_use(itemstack, placer, pointed_thing, def.max_uses)
 		end
 	})
 	-- Register its recipe
