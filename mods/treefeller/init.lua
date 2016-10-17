@@ -1,3 +1,5 @@
+local treefeller_rad = 5
+
 minetest.register_on_dignode(function(pos, oldnode, digger)
 	if digger == nil then
 		return
@@ -5,15 +7,23 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
 	local item = digger:get_wielded_item():to_string()
 	if string.match(item, "axe_") then
 		if minetest.get_item_group(oldnode.name, "tree") ~= 0 then
-			treefeller_loop(pos,digger)
+			treefeller_loop(pos,digger,pos)
 		end
 	end
 end)
 
 
 --have this recursively check for tree/leaves around it (1 node radius)
-treefeller_loop = function(pos,digger)
-
+treefeller_loop = function(pos,digger,origin)
+	if pos.x >= origin.x + treefeller_rad or pos.x <= origin.x - treefeller_rad then
+		return
+	end
+	if pos.y >= origin.y + treefeller_rad or pos.y <= origin.y - treefeller_rad then
+		return
+	end	
+	if pos.z >= origin.z + treefeller_rad or pos.z <= origin.z - treefeller_rad then
+		return
+	end
 	local min = {x=pos.x-1,y=pos.y-1,z=pos.z-1}
 	local max = {x=pos.x+1,y=pos.y+1,z=pos.z+1}
 	local vm = minetest.get_voxel_manip()	
@@ -38,9 +48,9 @@ treefeller_loop = function(pos,digger)
 					if minetest.get_item_group(name, "tree") ~= 0 then
 						if is_tree == "" then
 							data[p_pos] = air
-							minetest.after(0,function(pos2)
-								treefeller_loop(pos2)
-							end, pos2)
+							minetest.after(0,function(pos2,digger,origin)
+								treefeller_loop(pos2,digger,origin)
+							end, pos2,digger,origin)
 							minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, name)
 						end
 						
