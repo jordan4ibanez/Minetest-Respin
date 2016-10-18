@@ -1,20 +1,22 @@
 local treefeller_rad = 5
+treefeller_tool_damage = {}
 
 minetest.register_on_dignode(function(pos, oldnode, digger)
 	if digger == nil then
 		return
 	end
-	local item = digger:get_wielded_item():to_string()
-	if string.match(item, "axe_") then
+	local itemname = digger:get_wielded_item():to_string()
+	local item = digger:get_wielded_item()
+	if string.match(itemname, "axe_") then
 		if minetest.get_item_group(oldnode.name, "tree") ~= 0 then
-			treefeller_loop(pos,digger,pos)
+			treefeller_loop(pos,digger,pos,item)
 		end
 	end
 end)
 
 
 --have this recursively check for tree/leaves around it (1 node radius)
-treefeller_loop = function(pos,digger,origin)
+treefeller_loop = function(pos,digger,origin,item)
 	if pos.x >= origin.x + treefeller_rad or pos.x <= origin.x - treefeller_rad then
 		return
 	end
@@ -47,11 +49,33 @@ treefeller_loop = function(pos,digger,origin)
 				if placed == nil or placed == "" then
 					if minetest.get_item_group(name, "tree") ~= 0 then
 						if is_tree == "" then
-							data[p_pos] = air
-							minetest.after(0,function(pos2,digger,origin)
-								treefeller_loop(pos2,digger,origin)
-							end, pos2,digger,origin)
+
+							local wield_item = digger:get_wielded_item()
+							
+							--if hand then just return
+							if wield_item:to_string() == "" then
+								return
+							end
+							
+							--find if wielded item is the same as the original item
+							if wield_item:to_table().name ~= item:to_table().name then
+								return
+							end
+							
+							local uses = minetest.registered_items[item:to_table().name].tool_capabilities.groupcaps.choppy.uses
+
+							
+							wield_item:add_wear(65535/(uses*3))
+							
+							digger:set_wielded_item(wield_item)
+							
 							minetest.add_item({x=pos.x+x,y=pos.y+y,z=pos.z+z}, name)
+							minetest.after(0,function(pos2,digger,origin,item)
+								treefeller_loop(pos2,digger,origin,item)
+							end, pos2,digger,origin,item)
+							
+							
+							data[p_pos] = air
 						end
 						
 						
@@ -108,6 +132,7 @@ treefeller_loop = function(pos,digger,origin)
 	vm:calc_lighting()
 	vm:write_to_map()
 	vm:update_map()
+	return(item)
 end
 --placed trees have meta, so they don't get destroyed
 --useful for building things from tree, like tree wall, with tree farm inside
