@@ -1,6 +1,6 @@
 Minetest Game API
 =================
-GitHub Repo: https://github.com/minetest/minetest_game
+GitHub Repo: https://github.com/jordan4ibanez/Minetest-Respin
 
 Introduction
 ------------
