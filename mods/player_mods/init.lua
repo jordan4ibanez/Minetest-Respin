@@ -62,3 +62,37 @@ minetest.register_on_joinplayer(function(player)
 	end)
 end)
 
+--add food particles
+function core.item_eat(hp_change, replace_with_item)
+	return function(itemstack, user, pointed_thing)  -- closure
+		local pos = user:getpos()
+		local vel = user:get_player_velocity()
+		pos.y = pos.y + item_drop_settings.player_collect_height
+		local itemname = itemstack:get_name()
+		local texture  = minetest.registered_items[itemname].inventory_image
+		minetest.add_item(pos, drop)
+		  minetest.add_particlespawner({
+			 amount = 20,
+			 time = 0.1,
+			 minpos = {x=pos.x, y=pos.y, z=pos.z},
+			 maxpos = {x=pos.x, y=pos.y, z=pos.z},
+			 minvel = {x=vel.x-1, y=vel.y+1, z=vel.z-1},
+			 maxvel = {x=vel.x+1, y=vel.y+2, z=vel.z+1},
+			 minacc = {x=0, y=-5, z=0},
+			 maxacc = {x=0, y=-9, z=0},
+			 minexptime = 1,
+			 maxexptime = 1,
+			 minsize = 1,
+			 maxsize = 2,
+			 collisiondetection = true,
+			 vertical = false,
+			 texture = texture,
+		})
+		minetest.sound_play("bite_item_drop", {
+			pos = pos,
+			max_hear_distance = 100,
+			gain = 10.0,
+		})
+		return core.do_item_eat(hp_change, replace_with_item, itemstack, user, pointed_thing)
+	end
+end
