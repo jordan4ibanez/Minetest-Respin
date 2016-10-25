@@ -109,7 +109,7 @@ walk_end     = 121,
 --world/behavior params
 hostile      = true,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.01, --amount of mobs to spawn 
+fill_ratio   = 0.001, --amount of mobs to spawn 
 max_speed    = 4,
 chase_rad    = 15,
 attack_rad   = 1,
