@@ -28,3 +28,5 @@ vessels
 walls
 wool
 xpanes
+mesecons
+furniture
