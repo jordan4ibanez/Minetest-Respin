@@ -488,3 +488,35 @@ minetest.register_craft({
 		{"bucket:bucket_water", "bucket:bucket_empty"}
 	}
 })
+
+--cactus hurts
+minetest.register_abm{
+	nodenames = "default:cactus",
+	interval = 0.25,
+	chance = 1,
+	action = function(pos)
+		local ents = minetest.env:get_objects_inside_radius(pos, 2.5)
+		for k, ent in pairs(ents) do
+			local pos2 = ent:getpos()
+			--if player touches cactus then hurt
+			if ent:is_player() then
+				local diff = {x=pos.x-pos2.x,y=pos.y-pos2.y,z=pos.z-pos2.z}
+				if diff.y >= -0.5 and diff.y <= 2 then
+					if math.abs(diff.x) < 0.85 and math.abs(diff.z) < 0.85 then
+						ent:set_hp(ent:get_hp()-1)
+					end
+				end
+			end
+			--if it's an item then delete
+			if not ent:is_player() and ent:get_luaentity().itemstring then
+				local diff = {x=pos.x-pos2.x,y=pos.y-pos2.y,z=pos.z-pos2.z}
+				if math.abs(diff.y) <= 0.75 then
+					if math.abs(diff.x) < 0.85 and math.abs(diff.z) < 0.85 then
+						ent:remove()
+					end
+				end
+			end
+			--do something for mobs
+		end
+	end,
+}
