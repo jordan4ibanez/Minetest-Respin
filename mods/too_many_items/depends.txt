@@ -12,7 +12,6 @@ extreme_biomes
 farming
 fire
 flowers
-foliage
 item_drop
 mob
 notes

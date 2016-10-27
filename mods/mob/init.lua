@@ -81,7 +81,7 @@ walk_end     = 100,
 --world/behavior params
 hostile      = false,
 spawn_on     = "default:dirt_with_grass",
-fill_ratio   = 0.007, --amount of mobs to spawn
+fill_ratio   = 0.001, --amount of mobs to spawn
 max_speed    = 2,
 
 tool         = "mob:shears",
@@ -89,7 +89,7 @@ alt_drop     = "wool:white",
 drop         = "mob:meat_raw",
 hurt_sound   = "sheep",
 })
-
+--[[
 register_mob_land("zombie", {
 --self params
 collisionbox = {-0.4, 0.0, -0.4, 0.4, 1.8, 0.4},
@@ -220,7 +220,8 @@ attack_sound = "giant_attack",
 drop         = "default:glass",
 
 })
---[[[
+]]--
+
 register_mob_land("cow", {
 --self params
 collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
@@ -245,7 +246,7 @@ max_speed    = 3,
 
 drop         = "default:glass",
 
-})]]--
+})
 
 register_mob_water("fish", {
 --self params
